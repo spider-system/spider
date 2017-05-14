@@ -3,6 +3,7 @@ package com.spider.web.configration;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.spider.common.constants.GlobConts;
 import com.spider.web.configration.advice.LogViewResponseBodyAdvice;
 import com.spider.web.intercept.SystemInterceptor;
 import java.util.List;
@@ -39,21 +40,21 @@ public class SpringMvcConfigraion extends WebMvcConfigurationSupport {
         && ClassUtils.isPresent("com.fasterxml.jackson.core.JsonGenerator",
         WebMvcConfigurationSupport.class.getClassLoader());
 
-    @Bean
-    public ViewResolver viewResolver() {
-        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-        resolver.setPrefix("/WEB-INF/views/");
-        resolver.setSuffix(".html");
-        resolver.setExposeContextBeansAsAttributes(true);
-        return resolver;
-    }
+//    @Bean
+//    public ViewResolver viewResolver() {
+//        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+//        resolver.setPrefix("/static/views/");
+//        resolver.setSuffix(".html");
+//        resolver.setExposeContextBeansAsAttributes(true);
+//        return resolver;
+//    }
 
 
     public List<HttpMessageConverter<?>> setMessageConverters(){
         List<HttpMessageConverter<?>> messageConverters = Lists.newArrayList();
         messageConverters.add(new Jaxb2RootElementHttpMessageConverter());
         GsonHttpMessageConverter gsonHttpMessageConverter = new GsonHttpMessageConverter();
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        Gson gson = new GsonBuilder().setDateFormat(GlobConts.DEFAULT_FORMATTER_YYYYMMDDHHMMSS).create();
         gsonHttpMessageConverter.setGson(gson);
         messageConverters.add(gsonHttpMessageConverter);
         return messageConverters;
@@ -128,13 +129,13 @@ public class SpringMvcConfigraion extends WebMvcConfigurationSupport {
     }
 
 
-    /**
-     * 静态资源配置
-     * @param registry
-     */
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**").addResourceLocations("/WEB-INF/static/");
-    }
+//    /**
+//     * 静态资源配置
+//     * @param registry
+//     */
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/static/**").addResourceLocations("/WEB-INF/static/");
+//    }
 
 }
