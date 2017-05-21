@@ -89,11 +89,10 @@ public class TouTiaoPageProcessor implements PageProcessor {
 
 
     private static String[] processSeedUrl(){
-        List<String> seedUrls = Lists.newArrayList();//CategoryEnum.getCategoryList();
-        seedUrls.add(CategoryEnum.NEWS_TECH.getCode());
+        List<String> seedUrls = CategoryEnum.getCategoryList();
         String[] seedUrlArray = new String[seedUrls.size()];
         for (int i = 0; i < seedUrls.size(); i++) {
-            seedUrlArray[i] = String.format(SEED_URL,seedUrls.get(0),0,0);
+            seedUrlArray[i] = String.format(SEED_URL,seedUrls.get(i),0,0);
         }
         return seedUrlArray;
     }
