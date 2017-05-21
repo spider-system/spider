@@ -16,6 +16,7 @@ public class ClientTest {
         client.get(url);
         String result = client.getData();
         System.out.println(result);
+
     }
 
 }

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spider.business.repostory.mapper.BannerMapper" >
+  <resultMap id="BaseResultMap" type="com.spider.common.bean.Banner" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="banner_name" property="bannerName" jdbcType="VARCHAR" />
+    <result column="path" property="path" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="banner_type" property="bannerType" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, banner_name, banner_type, path, status, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_banner
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_banner
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.spider.common.bean.Banner" >
+    insert into t_banner (id, banner_name, banner_type, path,
+      status, create_time, update_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{bannerName,jdbcType=VARCHAR}, #{bannerType,jdbcType=INTEGER}, #{path,jdbcType=VARCHAR},
+      #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.spider.common.bean.Banner" >
+    insert into t_banner
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="bannerName != null" >
+        banner_name,
+      </if>
+      <if test="bannerType != null" >
+        banner_type,
+      </if>
+      <if test="path != null" >
+        path,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="bannerName != null" >
+        #{bannerName,jdbcType=VARCHAR},
+      </if>
+      <if test="bannerType != null" >
+        #{bannerType,jdbcType=INTEGER},
+      </if>
+      <if test="path != null" >
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.spider.common.bean.Banner" >
+    update t_banner
+    <set >
+      <if test="bannerName != null" >
+        banner_name = #{bannerName,jdbcType=VARCHAR},
+      </if>
+      <if test="bannerType != null" >
+        banner_type = #{bannerType,jdbcType=INTEGER},
+      </if>
+      <if test="path != null" >
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.spider.common.bean.Banner" >
+    update t_banner
+    set banner_name = #{bannerName,jdbcType=VARCHAR},
+      path = #{path,jdbcType=VARCHAR},
+      banner_type = #{bannerType,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+    <select id="query"  resultMap="BaseResultMap" parameterType="com.spider.common.bean.Banner" >
+        select
+        <include refid="Base_Column_List" />
+        from t_banner
+        <include refid="whereClause"></include>
+        <include refid="extendedOrderByClause"></include>
+    </select>
+
+    <sql id="whereClause">
+        <where>
+            <if test="id != null" >and id = #{id}</if>
+            <if test="bannerName != null and '' != bannerName" >and banner_name = #{bannerName}</if>
+            <if test="path != null and '' != path" >and path = #{path}</if>
+            <if test="status != null" >and status = #{status}</if>
+            <if test="bannerType != null" >and banner_type = #{bannerType}</if>
+        </where>
+    </sql>
+
+    <!-- 扩展的排序等语句（自定义）-->
+    <sql id="extendedOrderByClause">
+        <if test="null!=extendedParameter">
+            <if test="null!=extendedParameter.sidx and null!=extendedParameter.sord">ORDER BY ${extendedParameter.sidx}  ${extendedParameter.sord}   </if>
+        </if>
+    </sql>
+</mapper>

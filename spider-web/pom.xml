@@ -19,7 +19,7 @@
 
         <dependency>
             <groupId>com.spider</groupId>
-            <artifactId>spider-core</artifactId>
+            <artifactId>spider-business</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
@@ -34,6 +34,7 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
         </dependency>
+
 
 
 
