@@ -1,6 +1,5 @@
 package com.spider.core.webmagic.example;
 
-import com.google.common.collect.Lists;
 import com.spider.common.enums.CategoryEnum;
 import com.spider.common.utils.SpiderStringUtils;
 import com.spider.core.webmagic.Page;
@@ -32,7 +31,7 @@ public class TouTiaoPageProcessor implements PageProcessor {
         String type = page.getHtml().xpath("//span[@class='original']/text()").toString();
         String author = page.getHtml().xpath("//span[@class='src']/text()").toString();
         String time = page.getHtml().xpath("//span[@class='time']/text()").toString();
-        String content = page.getHtml().xpath("//div[@class='article-content']/text()").toString();
+        String content = page.getHtml().$(".article-content").toString();;
         String category = page.getHtml().xpath("//a[@ga_event='click_channel']/text()").toString();
         page.putField("title",title);
         page.putField("type",type);
@@ -40,7 +39,10 @@ public class TouTiaoPageProcessor implements PageProcessor {
         page.putField("content",content);
         page.putField("time",time);
         page.putField("category",category);
-        page.putField("rawText",page.getRawText());
+//        page.putField("rawText",page.getRawText());
+        if(SpiderStringUtils.isEmpty(content)){
+            page.setSkip(true);
+        }
     }
 
 
