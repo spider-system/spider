@@ -21,18 +21,18 @@ import org.springframework.transaction.annotation.TransactionManagementConfigure
 /**
  * Created by wangpeng on 2016/10/8.
  */
-@Configuration
-@MapperScan(basePackages = { "com.spider.business.repostory" }, annotationClass = MyBatisRepository.class)
-@EnableTransactionManagement(proxyTargetClass = true)
+//@Configuration
+//@MapperScan(basePackages = { "com.spider.business.repostory" }, annotationClass = MyBatisRepository.class)
+//@EnableTransactionManagement(proxyTargetClass = true)
 public class MyBatisConfigration implements TransactionManagementConfigurer {
 
-    @Autowired
+    //@Autowired
     private DataSourceProperties dataSourceProperties;
 
-    @Autowired
+    //@Autowired
     private PageHelper pageHelper;
 
-    @Bean(name = "dataSource", destroyMethod = "close")
+    //@Bean(name = "dataSource", destroyMethod = "close")
     public DruidDataSource getDataSource() throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setDriverClassName(dataSourceProperties.getDriverClassName());
@@ -62,7 +62,7 @@ public class MyBatisConfigration implements TransactionManagementConfigurer {
     }
 
 
-    @Bean
+    //@Bean
     public SqlSessionFactory getSqlSessionFactory() throws Exception {
         SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
         sqlSessionFactory.setDataSource(getDataSource());
