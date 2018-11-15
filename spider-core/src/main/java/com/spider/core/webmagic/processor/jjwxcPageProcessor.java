@@ -1,17 +1,16 @@
-package com.spider.core.webmagic.example;
+package com.spider.core.webmagic.processor;
 
-import com.spider.core.parse.impl.JsonPathEditable;
 import com.spider.core.parse.impl.RegexEditable;
-import com.spider.core.webmagic.Page;
-import com.spider.core.webmagic.Site;
-import com.spider.core.webmagic.Spider;
 import com.spider.core.webmagic.pipeline.TouTiaoPipeline;
-import com.spider.core.webmagic.processor.PageProcessor;
 import org.apache.commons.collections.CollectionUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import us.codecraft.webmagic.Page;
+import us.codecraft.webmagic.Site;
+import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.processor.PageProcessor;
 
 /**
  * Created by wangpeng on 2017/12/10.

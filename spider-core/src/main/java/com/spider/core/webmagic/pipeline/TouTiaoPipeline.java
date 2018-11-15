@@ -1,10 +1,6 @@
 package com.spider.core.webmagic.pipeline;
 
 import com.spider.common.utils.SpiderStringUtils;
-import com.spider.core.webmagic.ResultItems;
-import com.spider.core.webmagic.Task;
-import com.spider.core.webmagic.selector.RegexSelector;
-import com.spider.core.webmagic.utils.FilePersistentBase;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -13,6 +9,10 @@ import java.util.Map;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import us.codecraft.webmagic.ResultItems;
+import us.codecraft.webmagic.Task;
+import us.codecraft.webmagic.pipeline.Pipeline;
+import us.codecraft.webmagic.utils.FilePersistentBase;
 
 /**
  * Created by wangpeng on 2017/5/21.

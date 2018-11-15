@@ -1,14 +1,15 @@
-package com.spider.core.webmagic.example;
+package com.spider.core.webmagic.processor;
 
 import com.spider.common.enums.CategoryEnum;
 import com.spider.common.utils.SpiderStringUtils;
-import com.spider.core.webmagic.Page;
-import com.spider.core.webmagic.Site;
-import com.spider.core.webmagic.Spider;
 import com.spider.core.webmagic.pipeline.TouTiaoPipeline;
-import com.spider.core.webmagic.processor.PageProcessor;
-import com.spider.core.webmagic.selector.JsonPathSelector;
-import com.spider.core.webmagic.selector.RegexSelector;
+import us.codecraft.webmagic.Page;
+import us.codecraft.webmagic.Site;
+import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.processor.PageProcessor;
+import us.codecraft.webmagic.selector.JsonPathSelector;
+import us.codecraft.webmagic.selector.RegexSelector;
+
 import java.util.List;
 
 /**

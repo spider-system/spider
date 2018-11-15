@@ -3,14 +3,15 @@ package com.spider.core.webmagic.pipeline;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.spider.core.webmagic.ResultItems;
-import com.spider.core.webmagic.Task;
-import com.spider.core.webmagic.utils.FilePersistentBase;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import us.codecraft.webmagic.ResultItems;
+import us.codecraft.webmagic.Task;
+import us.codecraft.webmagic.pipeline.Pipeline;
+import us.codecraft.webmagic.utils.FilePersistentBase;
 
 import java.io.*;
 import java.util.Map;
@@ -45,7 +46,10 @@ public class ToutiaoAppPipeline extends FilePersistentBase implements Pipeline {
                 if("广告".equals(lable)){
                     //record data
                     try {
-                        FileUtils.writeByteArrayToFile(new File(filePath+File.separator+System.currentTimeMillis()+".json"),content.getBytes());
+                        FileUtils.writeByteArrayToFile(new File(filePath+File.separator+"ad/"+System.currentTimeMillis()+".json"),content.getBytes());
+                        if(content.contains("haohuo")){
+                            FileUtils.writeByteArrayToFile(new File(filePath+File.separator+"ad/haohuo/"+System.currentTimeMillis()+".json"),content.getBytes());
+                        }
                     } catch (IOException e) {
                         LOGGER.error(e.getMessage(),e);
                     }

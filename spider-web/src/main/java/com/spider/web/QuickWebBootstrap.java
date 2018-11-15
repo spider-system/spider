@@ -19,6 +19,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 @EnableConfigurationProperties
 @ImportResource({"classpath*:applicationContext-*.xml", "classpath*:spring/applicationContext-*.xml"})
 @EnableAutoConfiguration
+@EnableScheduling
 public class QuickWebBootstrap extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QuickWebBootstrap.class);
