@@ -4,10 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.spider.common.constants.GlobConts;
 import com.spider.common.response.ReturnT;
 import com.spider.common.utils.ToutiaoUtil;
+import com.spider.core.webmagic.downloader.HttpSwitchProyDownloader;
 import com.spider.core.webmagic.monitor.SpiderMonitor;
 import com.spider.core.webmagic.monitor.SpiderStatus;
 import com.spider.core.webmagic.pipeline.ToutiaoAppPipeline;
 import com.spider.core.webmagic.processor.ToutiaoAppPageProcessor;
+import com.spider.core.webmagic.proxy.ProxyPool;
+import com.spider.core.webmagic.proxy.entity.Proxy;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +65,7 @@ public class TouTiaoCrawlerService {
         Spider.create(new ToutiaoAppPageProcessor())
                 .addUrl(rootUrl+"?"+params)
                 .addPipeline(new ToutiaoAppPipeline(GlobConts.STORE_DATA_PATH))
+                .setDownloader(new HttpSwitchProyDownloader())
                 .setUUID(task)
                 .thread(100);
         try {
@@ -100,6 +104,11 @@ public class TouTiaoCrawlerService {
         map.put("startTime",spiderStatus.getStartTime());
         return new ReturnT().sucessData(map);
 
+    }
+
+    public ReturnT getProxy(){
+        Proxy proxy = ProxyPool.proxyQueue.poll();
+        return new ReturnT().sucessData(proxy);
     }
 
 

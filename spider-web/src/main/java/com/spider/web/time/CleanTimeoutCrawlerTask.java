@@ -3,7 +3,9 @@ package com.spider.web.time;
 import com.spider.common.constants.GlobConts;
 import com.spider.core.webmagic.monitor.SpiderMonitor;
 import com.spider.core.webmagic.monitor.SpiderStatus;
-import com.spider.web.service.TouTiaoCrawlerService;
+import com.spider.core.webmagic.proxy.ProxyPool;
+import com.spider.core.webmagic.proxy.entity.Proxy;
+import com.spider.core.webmagic.proxy.util.ProxyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.monitor.SpiderStatusMXBean;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -28,8 +31,12 @@ public class CleanTimeoutCrawlerTask {
 
     private static final Lock lock = new ReentrantLock();
 
+    //private static final Striped<Lock> striped = Striped.lazyWeakLock(127);
 
-    @Scheduled(cron="0/10 * *  * * ? ")//每60s执行一次
+    //private static final String CRWALER_TASK_REMOVAL_KEY = "crawler:task";
+
+
+    @Scheduled(cron="0/10 * *  * * ? ")//每10s执行一次
     public void cleanUp(){
         lock.lock();
         try {
@@ -52,6 +59,25 @@ public class CleanTimeoutCrawlerTask {
             }
         } finally {
             lock.unlock();
+        }
+    }
+
+    @Scheduled(cron="0/30 * *  * * ? ")//每30s执行一次
+    public void removeUnAvalibleProxy(){
+        ProxyPool.lock.readLock().lock();
+        try {
+            Iterator<Proxy> it = ProxyPool.proxySet.iterator();
+            while (it.hasNext()){
+                Proxy p = it.next();
+                if (ProxyUtil.isDiscardProxy(p) || ProxyUtil.isAliveTooLong(p)){
+                    if(ProxyPool.proxyQueue.contains(p)){
+                        ProxyPool.proxyQueue.remove(p);
+                    }
+                    it.remove();
+                }
+            }
+        } finally {
+            ProxyPool.lock.readLock().unlock();
         }
     }
 }

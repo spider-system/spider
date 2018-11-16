@@ -50,4 +50,11 @@ public class ToutiaoCrawlerController {
     public ReturnT status( @RequestParam @ApiParam(value = "机器名称") String deviceName){
         return touTiaoCrawlerService.getTaskStatsByTask(deviceName);
     }
+
+
+    @ApiOperation("获取代理")
+    @RequestMapping(value = "/task/proxy",method = RequestMethod.GET)
+    public ReturnT getProxy(){
+        return touTiaoCrawlerService.getProxy();
+    }
 }
