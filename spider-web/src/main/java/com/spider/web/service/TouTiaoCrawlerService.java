@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.spider.common.constants.GlobConts;
 import com.spider.common.response.ReturnT;
 import com.spider.common.utils.ToutiaoUtil;
-import com.spider.core.webmagic.downloader.HttpSwitchProyDownloader;
+import com.spider.core.webmagic.downloader.HttpSwitchProxyDownloader;
 import com.spider.core.webmagic.monitor.SpiderMonitor;
 import com.spider.core.webmagic.monitor.SpiderStatus;
 import com.spider.core.webmagic.pipeline.ToutiaoAppPipeline;
@@ -65,7 +65,7 @@ public class TouTiaoCrawlerService {
         Spider.create(new ToutiaoAppPageProcessor())
                 .addUrl(rootUrl+"?"+params)
                 .addPipeline(new ToutiaoAppPipeline(GlobConts.STORE_DATA_PATH))
-                .setDownloader(new HttpSwitchProyDownloader())
+                .setDownloader(new HttpSwitchProxyDownloader())
                 .setUUID(task)
                 .thread(100);
         try {

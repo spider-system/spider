@@ -14,7 +14,7 @@ import us.codecraft.webmagic.proxy.SimpleProxyProvider;
  * @author: wangpeng
  * @date: 2018/11/17 00:18
  */
-public class HttpSwitchProyDownloader extends HttpClientDownloader {
+public class HttpSwitchProxyDownloader extends HttpClientDownloader {
 
     @Override
     public Page download(Request request, Task task) {
