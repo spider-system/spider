@@ -2,22 +2,28 @@ package com.spider.core.webmagic.proxy.task;
 
 import com.spider.common.constants.GlobConts;
 import com.spider.common.utils.PropertieUtils;
-import com.spider.core.util.HttpClientUtil;
+import com.spider.core.parse.impl.RegexEditable;
 import com.spider.core.webmagic.proxy.ProxyHttpClient;
 import com.spider.core.webmagic.proxy.ProxyListPageParser;
 import com.spider.core.webmagic.proxy.ProxyPool;
-import com.spider.core.webmagic.proxy.entity.Direct;
-import com.spider.core.webmagic.proxy.entity.Page;
 import com.spider.core.webmagic.proxy.entity.Proxy;
 import com.spider.core.webmagic.proxy.site.ProxyListPageParserFactory;
-import org.apache.http.HttpHost;
+import com.spider.core.webmagic.proxy.util.ProxyUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import us.codecraft.webmagic.Page;
+import us.codecraft.webmagic.Request;
+import us.codecraft.webmagic.Site;
+import us.codecraft.webmagic.utils.UrlUtils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import static com.spider.core.webmagic.proxy.ProxyPool.proxyQueue;
 
@@ -32,32 +38,37 @@ public class ProxyPageTask implements Runnable{
 	protected String url;
 	private boolean proxyFlag;//是否通过代理下载
 	private Proxy currentProxy;//当前线程使用的代理
+	private List<String> cookies;
 
 	protected static ProxyHttpClient proxyHttpClient = ProxyHttpClient.getInstance();
 	private ProxyPageTask(){
 
 	}
+
+	public ProxyPageTask(String url, boolean proxyFlag, List<String> cookies) {
+		this.url = url;
+		this.proxyFlag = proxyFlag;
+		this.cookies = cookies;
+	}
+
 	public ProxyPageTask(String url, boolean proxyFlag){
 		this.url = url;
 		this.proxyFlag = proxyFlag;
 	}
 	public void run(){
 		long requestStartTime = System.currentTimeMillis();
-		HttpGet tempRequest = null;
+		Request request = new Request();
 		try {
 			Page page = null;
-			if (proxyFlag){
-				tempRequest = new HttpGet(url);
-				currentProxy = proxyQueue.take();
-				if(!(currentProxy instanceof Direct)){
-					HttpHost proxy = new HttpHost(currentProxy.getIp(), currentProxy.getPort());
-					tempRequest.setConfig(HttpClientUtil.getRequestConfigBuilder().setProxy(proxy).build());
+			request.setUrl(url);
+			if(CollectionUtils.isNotEmpty(cookies)){
+				for(String cookie : cookies){
+					String name = StringUtils.substringBefore(cookie,"=");
+					String value = StringUtils.substringBetween(cookie,name+"=",";");
+					request.addCookie(name,value);
 				}
-				page = proxyHttpClient.getWebPage(tempRequest);
-			}else {
-				page = proxyHttpClient.getWebPage(url);
 			}
-			page.setProxy(currentProxy);
+			page = proxyHttpClient.getWebPage(request, Site.me().setDomain(UrlUtils.getDomain(url)).toTask());
 			int status = page.getStatusCode();
 			long requestEndTime = System.currentTimeMillis();
 			String logStr = Thread.currentThread().getName() + " " + getProxyStr(currentProxy) +
@@ -69,19 +80,21 @@ public class ProxyPageTask implements Runnable{
 			} else {
 				logger.error(logStr);
 				Thread.sleep(100);
-				retry();
+				List<String> cookies = page.getHeaders().get("Set-Cookie");
+				if(status >= HttpStatus.SC_INTERNAL_SERVER_ERROR && CollectionUtils.isNotEmpty(cookies)){
+					String cookieClearance = ProxyUtil.getYdclearanceCookie(page.getRawText());
+					if(StringUtils.isNotEmpty(cookieClearance)){
+						cookies.add(cookieClearance);
+					}
+				}
+				retry(cookies);
 			}
 		} catch (InterruptedException e) {
 			logger.error("InterruptedException", e);
-		} catch (IOException e) {
-			retry();
-		} finally {
+		}finally {
 			if(currentProxy != null){
 				currentProxy.setTimeInterval(GlobConts.TIME_INTERVAL);
 				proxyQueue.add(currentProxy);
-			}
-			if (tempRequest != null){
-				tempRequest.releaseConnection();
 			}
 		}
 	}
@@ -89,18 +102,22 @@ public class ProxyPageTask implements Runnable{
 	/**
 	 * retry
 	 */
+	public void retry(List<String> cookies){
+		proxyHttpClient.getProxyDownloadThreadExecutor().execute(new ProxyPageTask(url, PropertieUtils.getBoolean("isProxy",true),cookies));
+	}
+
 	public void retry(){
 		proxyHttpClient.getProxyDownloadThreadExecutor().execute(new ProxyPageTask(url, PropertieUtils.getBoolean("isProxy",true)));
 	}
 
 	public void handle(Page page){
-		if (page.getHtml() == null || page.getHtml().equals("")){
+		if (page.getRawText() == null || page.getRawText().equals("")){
 			return;
 		}
 
 		ProxyListPageParser parser = ProxyListPageParserFactory.
 				getProxyListPageParser(ProxyPool.proxyMap.get(url));
-		List<Proxy> proxyList = parser.parse(page.getHtml());
+		List<Proxy> proxyList = parser.parse(page.getRawText());
 		for(Proxy p : proxyList){
 			p.setStartTime(System.currentTimeMillis());
 			ProxyPool.lock.readLock().lock();

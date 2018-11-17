@@ -1,23 +1,25 @@
 package com.spider.core.webmagic.proxy;
 
-import com.spider.core.httpclient.AbstractHttpClient;
 import com.spider.core.util.SimpleThreadPoolExecutor;
 import com.spider.core.util.ThreadPoolMonitor;
-import com.spider.core.webmagic.proxy.entity.Page;
+import com.spider.core.webmagic.downloader.HttpSwitchProxyDownloader;
 import com.spider.core.webmagic.proxy.task.ProxyPageTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import us.codecraft.webmagic.Page;
+import us.codecraft.webmagic.Request;
+import us.codecraft.webmagic.Task;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class ProxyHttpClient extends AbstractHttpClient {
+public class ProxyHttpClient {
     private static final Logger logger = LoggerFactory.getLogger(ProxyHttpClient.class);
     private volatile static ProxyHttpClient instance;
-    public static Set<Page> downloadFailureProxyPageSet = new HashSet<>(ProxyPool.proxyMap.size());
+
+    private HttpSwitchProxyDownloader httpDownLoader;
+
 
     public static ProxyHttpClient getInstance(){
         if (instance == null){
@@ -40,6 +42,7 @@ public class ProxyHttpClient extends AbstractHttpClient {
     public ProxyHttpClient(){
         initThreadPool();
         initProxy();
+        httpDownLoader = new HttpSwitchProxyDownloader();
     }
     /**
      * 初始化线程池
@@ -63,61 +66,27 @@ public class ProxyHttpClient extends AbstractHttpClient {
      *
      */
     private void initProxy(){
-//        Proxy[] proxyArray = null;
-//        try {
-//            Object obj = HttpClientUtil.deserializeObject(PropertieUtils.getString("proxyPath","/tmp/crawler/proxys"));
-//            if(obj == null){
-//                return;
-//            }
-//            proxyArray = (Proxy[]) obj;
-//            int usableProxyCount = 0;
-//            for (Proxy p : proxyArray){
-//                if (p == null){
-//                    continue;
-//                }
-//                p.setTimeInterval(GlobConts.TIME_INTERVAL);
-//                p.setFailureTimes(0);
-//                p.setSuccessfulTimes(0);
-//                long nowTime = System.currentTimeMillis();
-//                if (nowTime - p.getLastSuccessfulTime() < 1000 * 60 *60){
-//                    //上次成功离现在少于一小时
-//                    ProxyPool.proxyQueue.add(p);
-//                    ProxyPool.proxySet.add(p);
-//                    usableProxyCount++;
-//                }
-//            }
-//            logger.info("反序列化proxy成功，" + proxyArray.length + "个代理,可用代理" + usableProxyCount + "个");
-//        } catch (Exception e) {
-//            logger.warn("反序列化proxy失败",e);
-//        }
     }
     /**
      * 抓取代理
      */
     public void startCrawl(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true){
-                    for (String url : ProxyPool.proxyMap.keySet()){
-                        /**
-                         * 首次本机直接下载代理页面
-                         */
-                        proxyDownloadThreadExecutor.execute(new ProxyPageTask(url, false));
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    try {
-                        Thread.sleep(1000 * 60 * 60);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+        for (String url : ProxyPool.proxyMap.keySet()){
+            /**
+             * 首次本机直接下载代理页面
+             */
+            proxyDownloadThreadExecutor.execute(new ProxyPageTask(url, false));
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                logger.error(e.getMessage());
             }
-        }).start();
+        }
+    }
+
+    public Page getWebPage(Request request, Task task){
+        return httpDownLoader.download(request,task);
+
     }
     public ThreadPoolExecutor getProxyTestThreadExecutor() {
         return proxyTestThreadExecutor;

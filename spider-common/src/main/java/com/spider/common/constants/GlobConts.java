@@ -30,7 +30,7 @@ public class GlobConts {
 
     public final static int TIMEOUT = 10000;
 
-    public final static long PROXY_ALIVE_TIME_MILLS = 1000*60*3;//存活3分钟
+    public final static long PROXY_ALIVE_TIME_MILLS = 1000*60*10;//存活10分钟
 
 
     public final static String[] userAgentArray = new String[]{

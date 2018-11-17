@@ -3,6 +3,7 @@ package com.spider.web.time;
 import com.spider.common.constants.GlobConts;
 import com.spider.core.webmagic.monitor.SpiderMonitor;
 import com.spider.core.webmagic.monitor.SpiderStatus;
+import com.spider.core.webmagic.proxy.ProxyHttpClient;
 import com.spider.core.webmagic.proxy.ProxyPool;
 import com.spider.core.webmagic.proxy.entity.Proxy;
 import com.spider.core.webmagic.proxy.util.ProxyUtil;
@@ -24,9 +25,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * @date: 2018/11/15 23:24
  */
 @Component
-public class CleanTimeoutCrawlerTask {
+public class CrawlerTaskTimer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CleanTimeoutCrawlerTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CrawlerTaskTimer.class);
 
 
     private static final Lock lock = new ReentrantLock();
@@ -60,6 +61,12 @@ public class CleanTimeoutCrawlerTask {
         } finally {
             lock.unlock();
         }
+    }
+
+
+    @Scheduled(fixedDelay = 1000*60*60)
+    public void startProxy(){
+        ProxyHttpClient.getInstance().startCrawl();
     }
 
     @Scheduled(cron="0/30 * *  * * ? ")//每30s执行一次

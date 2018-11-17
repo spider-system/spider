@@ -10,6 +10,8 @@ import us.codecraft.webmagic.downloader.HttpClientDownloader;
 import us.codecraft.webmagic.proxy.Proxy;
 import us.codecraft.webmagic.proxy.SimpleProxyProvider;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author: wangpeng
  * @date: 2018/11/17 00:18
@@ -45,7 +47,7 @@ public class HttpSwitchProxyDownloader extends HttpClientDownloader {
     private Proxy switchProxy(){
         com.spider.core.webmagic.proxy.entity.Proxy proxy = null;
         try {
-            proxy = ProxyPool.proxyQueue.take();
+            proxy = ProxyPool.proxyQueue.poll(1, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             //
         }
