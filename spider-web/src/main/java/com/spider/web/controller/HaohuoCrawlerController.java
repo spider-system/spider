@@ -38,7 +38,7 @@ public class HaohuoCrawlerController {
     private HaohuoSellMapper haohuoSellMapper;
 
     @ApiOperation("开始执行爬取任务")
-    @RequestMapping(value = "/product/start",method = RequestMethod.POST)
+    @RequestMapping(value = "/task/start",method = RequestMethod.POST)
     public ReturnT start(@RequestParam @ApiParam(value = "机器名称") String deviceName,
                          @RequestParam @ApiParam(value = "商品ID") String productId ){
         return haohuoCrawlerService.startCrawler(deviceName, productId);
@@ -46,21 +46,21 @@ public class HaohuoCrawlerController {
 
 
     @ApiOperation("停止爬取任务")
-    @RequestMapping(value = "/product/stop",method = RequestMethod.POST)
+    @RequestMapping(value = "/task/stop",method = RequestMethod.POST)
     public ReturnT stop( @RequestParam @ApiParam(value = "机器名称") String deviceName){
         return haohuoCrawlerService.stopCrawlerTask(deviceName);
     }
 
 
     @ApiOperation("查询爬取任务状态")
-    @RequestMapping(value = "/product/status",method = RequestMethod.GET)
+    @RequestMapping(value = "/task/status",method = RequestMethod.GET)
     public ReturnT status( @RequestParam @ApiParam(value = "机器名称") String deviceName){
         return haohuoCrawlerService.getTaskStatsByTask(deviceName);
     }
 
 
     @ApiOperation("更新全部商品的销量")
-    @RequestMapping(value = "/product/crawlerAll",method = RequestMethod.GET)
+    @RequestMapping(value = "/task/crawlerAll",method = RequestMethod.GET)
     public ReturnT crawlerAll(@RequestParam @ApiParam(value = "机器名称") String deviceName){
         return haohuoCrawlerService.startAllCrawler(deviceName);
     }
