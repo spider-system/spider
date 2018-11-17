@@ -48,7 +48,6 @@
         <dependency>
             <groupId>com.spider</groupId>
             <artifactId>spider-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

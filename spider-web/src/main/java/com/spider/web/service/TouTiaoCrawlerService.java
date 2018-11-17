@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.spider.common.constants.GlobConts;
 import com.spider.common.response.ReturnT;
 import com.spider.common.utils.ToutiaoUtil;
+import com.spider.core.webmagic.ToutiaoSpider;
 import com.spider.core.webmagic.downloader.HttpSwitchProxyDownloader;
 import com.spider.core.webmagic.monitor.SpiderMonitor;
 import com.spider.core.webmagic.monitor.SpiderStatus;
@@ -61,9 +62,8 @@ public class TouTiaoCrawlerService {
                 .replace("${loc_time}",String.valueOf(time))
                 .replace("${tt_from}","enter_auto")
                 .replace("${list_count}","1");
-        Spider toutiaoSpider =
-        Spider.create(new ToutiaoAppPageProcessor())
-                .addUrl(rootUrl+"?"+params)
+        ToutiaoSpider toutiaoSpider = ToutiaoSpider.create(new ToutiaoAppPageProcessor());
+        toutiaoSpider.addUrl(rootUrl+"?"+params)
                 .addPipeline(new ToutiaoAppPipeline(GlobConts.STORE_DATA_PATH))
                 .setDownloader(new HttpSwitchProxyDownloader())
                 .setUUID(task)

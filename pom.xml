@@ -22,39 +22,22 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <spider.version>1.0-SNAPSHOT</spider.version>
         <java.version>1.8</java.version>
         <mybatis.version>3.2.2</mybatis.version>
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <commons-io.version>2.4</commons-io.version>
         <guava.version>18.0</guava.version>
         <codec.version>1.9</codec.version>
-        <dubbo.version>2.5.3</dubbo.version>
         <javassist.version>3.20.0-GA</javassist.version>
-        <zk-client.version>0.7</zk-client.version>
-        <javasimon.version>3.4.0</javasimon.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <xstream.version>1.4.7</xstream.version>
         <dom4j.version>1.6</dom4j.version>
         <gson.version>2.2.4</gson.version>
-        <httpclient.version>4.5.2</httpclient.version>
-        <okhttp.version>2.5.0</okhttp.version>
-        <jsoup.version>1.7.2</jsoup.version>
-        <jsonpath.version>0.8.1</jsonpath.version>
-        <xsoup.version>0.3.1</xsoup.version>
-        <fastjson.version>1.1.41</fastjson.version>
+        <fastjson.version>1.2.31</fastjson.version>
         <aspectweaver.version>1.8.9</aspectweaver.version>
-        <groovy.version>2.4.6</groovy.version>
-        <protostuff.version>1.0.8</protostuff.version>
-        <redis.version>2.7.3</redis.version>
-        <spring.session.version>1.3.0.M2</spring.session.version>
-        <mongodb-driver.version>3.3.0</mongodb-driver.version>
-        <spring-data-mongodb.version>1.9.4.RELEASE</spring-data-mongodb.version>
-        <!-- zookeeper -->
-        <zookeeper.version>3.4.6</zookeeper.version>
-        <curator.version>2.6.0</curator.version>
-        <javamail.version>1.4.1</javamail.version>
-        <selenium.version>2.44.0</selenium.version>
+        <webmagic.version>0.7.3</webmagic.version>
     </properties>
 
 
@@ -63,9 +46,32 @@
         <dependencies>
 
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context-support</artifactId>
-                <version>${spring.version}</version>
+                <groupId>com.spider</groupId>
+                <artifactId>spider-core</artifactId>
+                <version>${spider.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.spider</groupId>
+                <artifactId>spider-common</artifactId>
+                <version>${spider.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.spider</groupId>
+                <artifactId>spider-business</artifactId>
+                <version>${spider.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>us.codecraft</groupId>
+                <artifactId>webmagic-core</artifactId>
+                <version>${webmagic.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>us.codecraft</groupId>
+                <artifactId>webmagic-extension</artifactId>
+                <version>${webmagic.version}</version>
             </dependency>
 
             <dependency>
@@ -80,39 +86,6 @@
                 <version>${spring.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-mongodb</artifactId>
-                <version>${spring-data-mongodb.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-data-jpa</artifactId>
-                <version>1.3.1.RELEASE</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mongodb</groupId>
-                <artifactId>mongodb-driver</artifactId>
-                <version>${mongodb-driver.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.dyuproject.protostuff</groupId>
-                <artifactId>protostuff-core</artifactId>
-                <version>${protostuff.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.dyuproject.protostuff</groupId>
-                <artifactId>protostuff-runtime</artifactId>
-                <version>${protostuff.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.codehaus.groovy</groupId>
-                <artifactId>groovy-all</artifactId>
-                <version>${groovy.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.aspectj</groupId>
@@ -132,66 +105,13 @@
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.jsoup</groupId>
-                <artifactId>jsoup</artifactId>
-                <version>${jsoup.version}</version>
-            </dependency>
 
-            <dependency>
-                <groupId>com.jayway.jsonpath</groupId>
-                <artifactId>json-path</artifactId>
-                <version>${jsonpath.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>us.codecraft</groupId>
-                <artifactId>xsoup</artifactId>
-                <version>${xsoup.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${httpclient.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpmime</artifactId>
-                <version>${httpclient.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.squareup.okhttp</groupId>
-                <artifactId>okhttp</artifactId>
-                <version>${okhttp.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.seleniumhq.selenium</groupId>
-                <artifactId>selenium-java</artifactId>
-                <version>${selenium.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.thoughtworks.xstream</groupId>
-                <artifactId>xstream</artifactId>
-                <version>${xstream.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>dom4j</groupId>
-                <artifactId>dom4j</artifactId>
-                <version>${dom4j.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>net.sf.ehcache</groupId>
-                <artifactId>ehcache-core</artifactId>
-                <version>2.6.11</version>
-            </dependency>
             <!-- mybatis -->
             <dependency>
                 <groupId>org.mybatis</groupId>
@@ -203,45 +123,7 @@
                 <artifactId>mybatis-spring</artifactId>
                 <version>1.2.0</version>
             </dependency>
-            <!-- JMS -->
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-core</artifactId>
-                <version>${amq.version}</version>
-            </dependency>
 
-            <!-- DUBBO -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>dubbo</artifactId>
-                <version>${dubbo.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>spring</artifactId>
-                        <groupId>org.springframework</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>${javassist.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.101tec</groupId>
-                <artifactId>zkclient</artifactId>
-                <version>${zk-client.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-log4j12</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
             <!-- GENERAL UTILS begin -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -264,48 +146,7 @@
                 <version>${codec.version}</version>
             </dependency>
 
-            <!-- Monitor begin -->
-            <!-- javasimon -->
-            <dependency>
-                <groupId>org.javasimon</groupId>
-                <artifactId>javasimon-spring</artifactId>
-                <version>${javasimon.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.javasimon</groupId>
-                <artifactId>javasimon-jdbc4</artifactId>
-                <version>${javasimon.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.javasimon</groupId>
-                <artifactId>javasimon-console-embed</artifactId>
-                <version>${javasimon.version}</version>
-            </dependency>
 
-            <!-- redis -->
-            <dependency>
-                <groupId>redis.clients</groupId>
-                <artifactId>jedis</artifactId>
-                <version>${redis.version}</version>
-                <type>jar</type>
-                <scope>compile</scope>
-            </dependency>
-
-            <!-- Spring session -->
-            <dependency>
-                <groupId>org.springframework.session</groupId>
-                <artifactId>spring-session</artifactId>
-                <version>${spring.session.version}</version>
-            </dependency>
-
-
-
-            <!-- kaptcha -->
-            <dependency>
-                <groupId>com.google.code.kaptcha</groupId>
-                <artifactId>kaptcha</artifactId>
-                <version>2.3.2</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.apache.poi</groupId>
@@ -317,50 +158,6 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
                 <version>3.12</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>pdfbox</artifactId>
-                <version>1.8.10</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>xmpbox</artifactId>
-                <version>1.8.10</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.pdfbox</groupId>
-                <artifactId>fontbox</artifactId>
-                <version>1.8.10</version>
-            </dependency>
-
-
-            <!-- zookeeper -->
-            <dependency>
-                <groupId>org.apache.zookeeper</groupId>
-                <artifactId>zookeeper</artifactId>
-                <version>${zookeeper.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.curator</groupId>
-                <artifactId>curator-framework</artifactId>
-                <version>${curator.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.curator</groupId>
-                <artifactId>curator-recipes</artifactId>
-                <version>${curator.version}</version>
-            </dependency>
-
-            <!-- mail-->
-            <dependency>
-                <groupId>javax.mail</groupId>
-                <artifactId>mail</artifactId>
-                <version>${javamail.version}</version>
             </dependency>
 
             <dependency>

@@ -10,10 +10,8 @@ import com.spider.core.webmagic.proxy.entity.Proxy;
 import com.spider.core.webmagic.proxy.site.ProxyListPageParserFactory;
 import com.spider.core.webmagic.proxy.util.ProxyUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -21,9 +19,7 @@ import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.utils.UrlUtils;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import static com.spider.core.webmagic.proxy.ProxyPool.proxyQueue;
 
@@ -75,10 +71,10 @@ public class ProxyPageTask implements Runnable{
 					"  executing request " + page.getUrl()  + " response statusCode:" + status +
 					"  request cost time:" + (requestEndTime - requestStartTime) + "ms";
 			if(status == HttpStatus.SC_OK){
-				logger.debug(logStr);
+				//logger.debug(logStr);
 				handle(page);
 			} else {
-				logger.error(logStr);
+				//logger.error(logStr);
 				Thread.sleep(100);
 				List<String> cookies = page.getHeaders().get("Set-Cookie");
 				if(status >= HttpStatus.SC_INTERNAL_SERVER_ERROR && CollectionUtils.isNotEmpty(cookies)){

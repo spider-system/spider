@@ -12,6 +12,7 @@ import javax.management.*;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -67,16 +68,36 @@ public class SpiderMonitor {
         return new SpiderStatus(spider, monitorSpiderListener);
     }
 
-    public SpiderStatus getSpiderStatusByUUID(String deviceName){
+    public SpiderStatus getSpiderStatusByUUID(String task){
         if(spiderStatuses == null || spiderStatuses.size() == 0){
             return null;
         }
         for(SpiderStatusMXBean spiderStatusMXBean : spiderStatuses){
-            if(deviceName.equals(spiderStatusMXBean.getName())){
+            if(task.equals(spiderStatusMXBean.getName())){
                 return (SpiderStatus)spiderStatusMXBean;
             }
         }
         return null;
+    }
+
+    public synchronized Boolean unRegisterSpdierByTask(String task){
+        if(spiderStatuses == null || spiderStatuses.size() == 0){
+            return false;
+        }
+        Iterator<SpiderStatusMXBean> it = spiderStatuses.iterator();
+        while (it.hasNext()){
+            SpiderStatusMXBean spiderStatusMXBean = it.next();
+            if(task.equals(spiderStatusMXBean.getName())){
+                try {
+                    unRegisterMBean(spiderStatusMXBean);
+                } catch (JMException e) {
+                    // exception
+                }
+                it.remove();
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<SpiderStatusMXBean> getSpiderStatuses(){
@@ -122,5 +143,10 @@ public class SpiderMonitor {
     protected void registerMBean(SpiderStatusMXBean spiderStatus) throws MalformedObjectNameException, InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
         ObjectName objName = new ObjectName(jmxServerName + ":name=" + UrlUtils.removePort(spiderStatus.getName()));
         mbeanServer.registerMBean(spiderStatus, objName);
+    }
+
+    protected void unRegisterMBean(SpiderStatusMXBean spiderStatus) throws MalformedObjectNameException, InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException, InstanceNotFoundException {
+        ObjectName objName = new ObjectName(jmxServerName + ":name=" + UrlUtils.removePort(spiderStatus.getName()));
+        mbeanServer.unregisterMBean(objName);
     }
 }

@@ -1,12 +1,10 @@
 package com.spider.core.webmagic.proxy.util;
 
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMultimap;
 import com.spider.common.constants.GlobConts;
 import com.spider.core.parse.impl.RegexEditable;
 import com.spider.core.webmagic.proxy.entity.Proxy;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;

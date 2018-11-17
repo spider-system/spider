@@ -1,8 +1,10 @@
 package com.spider.core.webmagic.downloader;
 
+import com.spider.common.constants.GlobConts;
 import com.spider.common.utils.PropertieUtils;
 import com.spider.core.webmagic.proxy.ProxyPool;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -17,7 +19,6 @@ import us.codecraft.webmagic.downloader.HttpClientGenerator;
 import us.codecraft.webmagic.downloader.HttpClientRequestContext;
 import us.codecraft.webmagic.downloader.HttpUriRequestConverter;
 import us.codecraft.webmagic.proxy.Proxy;
-import us.codecraft.webmagic.proxy.SimpleProxyProvider;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -47,19 +48,44 @@ public class HttpSwitchProxyDownloader extends HttpClientDownloader {
             proxy = switchProxy();
             if(proxy != null && StringUtils.isNotEmpty(proxy.getHost()) && proxy.getPort() != 0){
                 isUserProxy = true;
-                setProxyProvider(SimpleProxyProvider.from(proxy));
             }
         }
         try {
-            Page page = download(request, task,proxy);
+            Page page = download(request, task,isUserProxy ? proxy : null);
             if(isUserProxy && !page.isDownloadSuccess()){
                 //do not use proxy to crawler again
                 return download(request, task,null);
+            }
+            //头条
+            if(request.getUrl().contains(GlobConts.TOUTIAO_URL_PREFIX)){
+                return checkStatusCodeIfNeedRetry(request,task,page);
             }
             return page;
         }catch (Exception e){
             return download(request, task,null);
         }
+    }
+
+
+    /**
+     * 判断是否要重试for toutiao crawler
+     * @param request
+     * @param task
+     * @param page
+     * @return
+     */
+    private Page checkStatusCodeIfNeedRetry(Request request, Task task,Page page){
+        int statusCode = page.getStatusCode();
+        if(statusCode != HttpStatus.SC_OK){
+            //重试一次
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                //
+            }
+            return download(request,task,null);
+        }
+        return page;
     }
 
     private Page download(Request request, Task task,Proxy proxy){
@@ -74,7 +100,9 @@ public class HttpSwitchProxyDownloader extends HttpClientDownloader {
             httpResponse = httpClient.execute(requestContext.getHttpUriRequest(), requestContext.getHttpClientContext());
             page = handleResponse(request, request.getCharset() != null ? request.getCharset() : task.getSite().getCharset(), httpResponse, task);
             onSuccess(request);
-            logger.info("downloading page success {}", request.getUrl());
+            if(request.getUrl().contains(GlobConts.TOUTIAO_URL_PREFIX)){
+                logger.info("downloading page success {}", request.getUrl());
+            }
             return page;
         } catch (IOException e) {
             logger.warn("download page {} error", request.getUrl());

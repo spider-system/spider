@@ -37,7 +37,7 @@ public class ProxyTestTask implements Runnable{
                     "  executing request " + page.getUrl()  + " response statusCode:" + page.getStatusCode() +
                     "  request cost time:" + (endTime - startTime) + "ms";
             if (page == null || page.getStatusCode() != 200){
-                logger.warn(logStr);
+                //logger.warn(logStr);
                 return;
             }
             logger.debug(proxy.toString() + "---------" + page.toString());
