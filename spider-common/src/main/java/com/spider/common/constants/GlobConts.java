@@ -21,7 +21,8 @@ public class GlobConts {
 
     public static final String STORE_DATA_PATH = "/Users/wangpeng/Documents/webmagic-crawler-file";
 
-    public static final int MAX_CRAWLER_TIME = 2*1000*60*60*24;//最多跑2天
+    public static final Long MAX_CRAWLER_TIME = 2*1000*60*60*24l;//最多跑2天
+    public static final Long CRAWLER_TIME_TOO_SHORT = 1000*60*60l;//最多跑2天
 
     /**
      * 单个ip请求间隔，单位ms
@@ -31,5 +32,16 @@ public class GlobConts {
     public final static long PROXY_ALIVE_TIME_MILLS = 1000*60*10;//存活10分钟
 
     public final static String TOUTIAO_URL_PREFIX = "snssdk";
+
+
+
+    public static final String FIRST_FF_FROM_ANDRIOD = "enter_auto";
+    public static final String FIRST_FF_FROM_IOS = "enter_auto";
+    public static final String MORE_TT_FROM_ANDRIOD = "pre_load_more";
+    public static final String MORE_TT_FROM_IOS = "load_more";
+    public static final String PULL_TT_FROM = "pull";
+    public static final String LAST_READ_TT_FROM = "last_read";
+
+    public static final String ANDROID = "android";
 
 }

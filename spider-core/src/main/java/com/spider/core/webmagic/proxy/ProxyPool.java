@@ -1,7 +1,6 @@
 package com.spider.core.webmagic.proxy;
 
 
-import com.spider.core.webmagic.proxy.entity.Direct;
 import com.spider.core.webmagic.proxy.entity.Proxy;
 import com.spider.core.webmagic.proxy.site.ip66.Ip66ProxyListPageParser;
 import com.spider.core.webmagic.proxy.site.mimiip.MimiipProxyListPageParser;
@@ -14,7 +13,6 @@ import java.util.Set;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import static com.spider.common.constants.GlobConts.TIME_INTERVAL;
 
 /**
  * 代理池
@@ -44,7 +42,6 @@ public class ProxyPool {
             proxyMap.put("http://www.mimiip.com/gngao/" + i, MimiipProxyListPageParser.class);//高匿
             proxyMap.put("http://www.mimiip.com/gnpu/" + i, MimiipProxyListPageParser.class);//普匿
         }
-        proxyQueue.add(new Direct(TIME_INTERVAL));
     }
 
 }

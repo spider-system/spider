@@ -1,7 +1,8 @@
-package com.spider.common.utils;
+package com.spider.core.util;
 
-import com.google.gson.JsonObject;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.DigestUtils;
+import us.codecraft.webmagic.Page;
 
 import java.net.URLEncoder;
 import java.util.Date;
@@ -18,7 +19,7 @@ public class ToutiaoUtil {
     public static Map<String,String> getAsCp(){
         String as = "479BB4B7254C150";
         String cp = "7E0AC8874BB0985";
-        int t = (int) (new Date().getTime()/1000);
+        int t = (int) (System.currentTimeMillis()/1000);
         String e = Integer.toHexString(t).toUpperCase();
         String i = DigestUtils.md5DigestAsHex(String.valueOf(t).getBytes()).toUpperCase();
         if (e.length()==8) {
@@ -55,8 +56,23 @@ public class ToutiaoUtil {
             url = url.replace("${now}", System.currentTimeMillis() + "");
         }
         if (url.matches(".+(\\$\\{.+\\}).*")) {
-            //log.error("{} contains undefined parameters", url);
             throw new Exception("URL_PARAM_ERROR");
+        }
+        return url;
+    }
+
+    public static String replaceParams(Page page, Map<String,String> replaceMap) {
+        String url = page.getUrl().get();
+        Map<String,String> ascp = getAsCp();
+        replaceMap.put("as",ascp.get("as"));
+        replaceMap.put("cp",ascp.get("cp"));
+        for (Map.Entry<String, String> kv : replaceMap.entrySet()) {
+            String key = kv.getKey();
+            String vaule = kv.getValue();
+            String originalValue = page.getUrl().regex(key+"=(.*?)&").get();
+            if(StringUtils.isNoneBlank(originalValue)){
+                url = url.replace(key+"="+originalValue+"&",key+"="+vaule+"&");
+            }
         }
         return url;
     }

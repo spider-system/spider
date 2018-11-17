@@ -44,9 +44,9 @@ public class ToutiaoAppPipeline extends FilePersistentBase implements Pipeline {
                 if("广告".equals(lable)){
                     //record data
                     try {
-                        FileUtils.writeByteArrayToFile(new File(filePath+File.separator+"ad/"+System.currentTimeMillis()+".json"),content.getBytes());
+                        FileUtils.writeByteArrayToFile(new File(filePath+File.separator+"ad/"+task.getUUID()+"/"+System.currentTimeMillis()+".json"),content.getBytes());
                         if(content.contains("haohuo")){
-                            FileUtils.writeByteArrayToFile(new File(filePath+File.separator+"ad/haohuo/"+System.currentTimeMillis()+".json"),content.getBytes());
+                            FileUtils.writeByteArrayToFile(new File(filePath+File.separator+"ad/"+task.getUUID()+"/haohuo/"+System.currentTimeMillis()+".json"),content.getBytes());
                         }
                     } catch (IOException e) {
                         LOGGER.error(e.getMessage(),e);

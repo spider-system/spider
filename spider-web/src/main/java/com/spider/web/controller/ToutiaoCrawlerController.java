@@ -31,6 +31,13 @@ public class ToutiaoCrawlerController {
     }
 
 
+    @ApiOperation("导入爬取url开始执行爬虫任务")
+    @RequestMapping(value = "/start/url",method = RequestMethod.POST)
+    public ReturnT startTaskByUrl(@RequestParam @ApiParam(value = "爬取的url",required = true) String url, @RequestParam @ApiParam(value = "机器名称") String deviceName){
+        return touTiaoCrawlerService.startCrawlerByImportUrl(deviceName,url);
+    }
+
+
     @ApiOperation("开始执行爬取任务")
     @RequestMapping(value = "/task/start",method = RequestMethod.POST)
     public ReturnT start( @RequestParam @ApiParam(value = "机器名称") String deviceName){

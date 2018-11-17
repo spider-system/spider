@@ -64,7 +64,7 @@ public class ProxyPageTask implements Runnable{
 					request.addCookie(name,value);
 				}
 			}
-			page = proxyHttpClient.getWebPage(request, Site.me().setDomain(UrlUtils.getDomain(url)).toTask());
+			page = proxyHttpClient.getWebPage(request, Site.me().setDomain(UrlUtils.getDomain(url)).setTimeOut(10000).toTask());
 			int status = page.getStatusCode();
 			long requestEndTime = System.currentTimeMillis();
 			String logStr = Thread.currentThread().getName() + " " + getProxyStr(currentProxy) +

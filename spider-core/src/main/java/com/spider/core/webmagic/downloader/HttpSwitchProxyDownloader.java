@@ -23,7 +23,6 @@ import us.codecraft.webmagic.proxy.Proxy;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author: wangpeng
@@ -137,12 +136,7 @@ public class HttpSwitchProxyDownloader extends HttpClientDownloader {
 
 
     private Proxy switchProxy(){
-        com.spider.core.webmagic.proxy.entity.Proxy proxy = null;
-        try {
-            proxy = ProxyPool.proxyQueue.poll(1, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            //
-        }
+        com.spider.core.webmagic.proxy.entity.Proxy proxy = ProxyPool.proxyQueue.poll();
         if(proxy != null){
             return new Proxy(proxy.getIp(),proxy.getPort());
         }

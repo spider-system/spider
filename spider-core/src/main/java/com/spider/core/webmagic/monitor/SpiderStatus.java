@@ -21,15 +21,22 @@ public class SpiderStatus implements SpiderStatusMXBean {
 
     protected final SpiderMonitor.MonitorSpiderListener monitorSpiderListener;
 
+    /**
+     * 是否手动停止
+     */
+    private Boolean isManualStop = Boolean.FALSE;
+
     public SpiderStatus(Spider spider, SpiderMonitor.MonitorSpiderListener monitorSpiderListener) {
         this.spider = spider;
         this.monitorSpiderListener = monitorSpiderListener;
     }
 
+    @Override
     public String getName() {
         return spider.getUUID();
     }
 
+    @Override
     public int getLeftPageCount() {
         if (spider.getScheduler() instanceof MonitorableScheduler) {
             return ((MonitorableScheduler) spider.getScheduler()).getLeftRequestsCount(spider);
@@ -38,6 +45,7 @@ public class SpiderStatus implements SpiderStatusMXBean {
         return -1;
     }
 
+    @Override
     public int getTotalPageCount() {
         if (spider.getScheduler() instanceof MonitorableScheduler) {
             return ((MonitorableScheduler) spider.getScheduler()).getTotalRequestsCount(spider);
@@ -56,6 +64,7 @@ public class SpiderStatus implements SpiderStatusMXBean {
         return monitorSpiderListener.getErrorCount().get();
     }
 
+    @Override
     public List<String> getErrorPages() {
         return monitorSpiderListener.getErrorUrls();
     }
@@ -70,10 +79,12 @@ public class SpiderStatus implements SpiderStatusMXBean {
         return spider.getThreadAlive();
     }
 
+    @Override
     public void start() {
         spider.start();
     }
 
+    @Override
     public void stop() {
         spider.stop();
     }
@@ -87,5 +98,13 @@ public class SpiderStatus implements SpiderStatusMXBean {
     public int getPagePerSecond() {
         int runSeconds = (int) (System.currentTimeMillis() - getStartTime().getTime()) / 1000;
         return getSuccessPageCount() / runSeconds;
+    }
+
+    public Boolean getManualStop() {
+        return isManualStop;
+    }
+
+    public void setManualStop(Boolean manualStop) {
+        isManualStop = manualStop;
     }
 }
