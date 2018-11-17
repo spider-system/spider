@@ -47,7 +47,7 @@
 
         <dependency>
             <groupId>com.spider</groupId>
-            <artifactId>spider-core</artifactId>
+            <artifactId>spider-common</artifactId>
         </dependency>
     </dependencies>
 

@@ -19,7 +19,7 @@
 
         <dependency>
             <groupId>com.spider</groupId>
-            <artifactId>spider-business</artifactId>
+            <artifactId>spider-core</artifactId>
         </dependency>
 
 

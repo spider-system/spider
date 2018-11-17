@@ -16,7 +16,13 @@
 
         <dependency>
             <groupId>com.spider</groupId>
-            <artifactId>spider-common</artifactId>
+            <artifactId>spider-business</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
 
 

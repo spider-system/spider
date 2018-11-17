@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spider.business.repostory.mapper.HaohuoSellMapper" >
+  <resultMap id="BaseResultMap" type="com.spider.common.bean.HaohuoSell" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="product_id" property="productId" jdbcType="VARCHAR" />
+    <result column="last_sell_num" property="lastSellNum" jdbcType="INTEGER" />
+    <result column="add_sell_num" property="addSellNum" jdbcType="INTEGER" />
+    <result column="total_sell_num" property="totalSellNum" jdbcType="INTEGER" />
+    <result column="crawler_time" property="crawlerTime" jdbcType="TIMESTAMP" />
+    <result column="last_crawler_time" property="lastCrawlerTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, product_id, name, last_sell_num, add_sell_num, total_sell_num, crawler_time, last_crawler_time
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_haohuo_product_sell
+    where product_id = #{id,jdbcType=INTEGER}
+    order by id desc limit 2
+  </select>
+  
+  <insert id="insert" parameterType="com.spider.common.bean.HaohuoSell" >
+    insert into t_haohuo_product_sell (product_id, name, last_sell_num, add_sell_num, total_sell_num, crawler_time, last_crawler_time)
+    values (#{productId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{lastSellNum,jdbcType=INTEGER},#{addSellNum,jdbcType=INTEGER},
+    #{totalSellNum,jdbcType=INTEGER}, now(), #{lastCrawlerTime,jdbcType=TIMESTAMP})
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.spider.common.bean.HaohuoSell" >
+    update t_haohuo_product_sell
+    <set >
+      <if test="lastSellNum != null" >
+        last_sell_num = #{lastSellNum,jdbcType=INTEGER},
+      </if>
+      <if test="addSellNum != null" >
+        add_sell_num = #{addSellNum,jdbcType=INTEGER},
+      </if>
+      <if test="totalSellNum != null" >
+        total_sell_num = #{totalSellNum,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

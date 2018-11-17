@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spider.business.repostory.mapper.HaohuoCommodityMapper" >
+  <resultMap id="BaseResultMap" type="com.spider.common.bean.HaohuoCommodity" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="first_industry" property="firstIndustry" jdbcType="VARCHAR" />
+    <result column="second_industry" property="secondIndustry" jdbcType="VARCHAR" />
+    <result column="product_id" property="productId" jdbcType="VARCHAR" />
+    <result column="shop_name" property="shopName" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="sell_num" property="sellNum" jdbcType="INTEGER" />
+    <result column="sku_max_price" property="skuMaxPrice" jdbcType="INTEGER" />
+    <result column="discount_price" property="discountPrice" jdbcType="INTEGER" />
+    <result column="product_link" property="productLink" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, first_industry, second_industry, product_id, shop_name, name, sell_num, sku_max_price, discount_price, 
+    product_link, status, create_time, update_time
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_haohuo_product
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByProductId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from t_haohuo_product
+    where product_id = #{productId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_haohuo_product
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.spider.common.bean.HaohuoCommodity" >
+    insert into t_haohuo_product (first_industry, second_industry, product_id, shop_name, name, 
+        sell_num, sku_max_price, discount_price, product_link, status, create_time, update_time
+      )
+    values (#{firstIndustry,jdbcType=VARCHAR}, #{secondIndustry,jdbcType=VARCHAR}, #{productId,jdbcType=INTEGER},
+      #{shopName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{sellNum,jdbcType=INTEGER},
+      #{skuMaxPrice,jdbcType=INTEGER},#{discountPrice,jdbcType=INTEGER},#{productLink,jdbcType=VARCHAR}, 0, now(), now()
+      )
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.spider.common.bean.HaohuoCommodity" >
+    update t_haohuo_product
+    <set >
+      <if test="firstIndustry != null" >
+        first_industry = #{firstIndustry,jdbcType=VARCHAR},
+      </if>
+      <if test="secondIndustry != null" >
+        second_industry = #{secondIndustry,jdbcType=VARCHAR},
+      </if>
+      <if test="sellNum != null" >
+        sell_num = #{sellNum,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+        update_time = now()
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <update id="updateByProductIdSelective" parameterType="com.spider.common.bean.HaohuoCommodity" >
+    update t_haohuo_product
+    <set >
+      <if test="firstIndustry != null" >
+        first_industry = #{firstIndustry,jdbcType=VARCHAR},
+      </if>
+      <if test="secondIndustry != null" >
+        second_industry = #{secondIndustry,jdbcType=VARCHAR},
+      </if>
+      <if test="sellNum != null" >
+        sell_num = #{sellNum,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+        update_time = now()
+    </set>
+    where product_id = #{productId,jdbcType=INTEGER}
+  </update>
+
+  <select id="query"  resultMap="BaseResultMap" parameterType="com.spider.common.bean.HaohuoCommodity" >
+      select
+      <include refid="Base_Column_List" />
+      from t_haohuo_product
+      <include refid="whereClause"></include>
+  </select>
+
+  <sql id="whereClause">
+      <where>
+          <if test="id != null" >and id = #{id}</if>
+          <if test="productId != null" >and product_id = #{productId}</if>
+          <if test="firstIndustry != null and '' != firstIndustry" >and first_industry = #{firstIndustry}</if>
+          <if test="secondIndustry != null and '' != secondIndustry" >and second_industry = #{secondIndustry}</if>
+          <if test="status != null" >and status = #{status}</if>
+          <if test="shopName != null" >and shop_name = #{shopName}</if>
+          <if test="name != null" >and name = #{name}</if>
+      </where>
+  </sql>
+</mapper>

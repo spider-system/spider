@@ -3,6 +3,7 @@ package com.spider.web;
 
 import com.spider.common.utils.PropertieUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 @ImportResource({"classpath*:applicationContext-*.xml", "classpath*:spring/applicationContext-*.xml"})
 @EnableAutoConfiguration
 @EnableScheduling
+//@MapperScan("com.spider.business")
 public class QuickWebBootstrap extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QuickWebBootstrap.class);
