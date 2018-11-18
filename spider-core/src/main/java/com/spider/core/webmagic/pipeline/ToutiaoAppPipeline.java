@@ -54,7 +54,7 @@ public class ToutiaoAppPipeline extends FilePersistentBase implements Pipeline {
                         if(StringUtils.isNoneBlank(url) && url.contains("haohuo")){
                             if(dataHandler != null){
                                 String productId = new RegexEditable("id=(.*?)&").cutStr(url);
-                                dataHandler.sendToHaohuoCrawler(productId,productId);
+                                dataHandler.sendToHaohuoCrawler(productId);
                             }
                             FileUtils.writeByteArrayToFile(new File(filePath+File.separator+"ad/"+task.getUUID()+"/haohuo/"+System.currentTimeMillis()+".json"),content.getBytes());
                         }

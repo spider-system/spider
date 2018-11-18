@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <script type="text/javascript" th:src="@{https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js}"></script>
+    <link th:href="@{https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/default.css}" rel="stylesheet"/>
+    <link rel="icon" th:href="@{/images/favicon.ico}" type="image/x-icon"/>
+    <meta charset="UTF-8"/>
+    <title>商品列表</title>
+</head>
+
+<body>
+
+<div class="contentDiv">
+
+    <h5> 好货爬取商品列表 </h5>
+    <div><a class="btn btn-success" href="/haohuo/crawler/task/crawlerAll" role="button">重新爬取所有</a></div>
+    <table class="table table-hover table-condensed">
+        <legend>
+            <strong>商品列表</strong>
+        </legend>
+        <thead>
+        <tr>
+            <th>商品ID</th>
+            <th>一级行业</th>
+            <th>二级行业</th>
+            <th>店铺名称</th>
+            <th>商品名称</th>
+            <th>商品最高价格</th>
+            <th>商品打折价格</th>
+            <th>最新销量</th>
+            <th>上次销量</th>
+            <th>销量增量</th>
+            <th>最近爬取时间</th>
+            <th>上次爬取时间</th>
+            <th>商品链接</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="haohuo : ${commoditys}">
+            <th scope="row" th:text="${haohuo.productId}"></th>
+            <td th:text="${haohuo.firstIndustry}"></td>
+            <td th:text="${haohuo.secondIndustry}"></td>
+            <td th:text="${haohuo.shopName}"></td>
+            <td th:text="${haohuo.name}"></td>
+            <td th:text="${haohuo.skuMaxPrice}"></td>
+            <td th:text="${haohuo.discountPrice}"></td>
+            <td th:text="${haohuo.lastSellNum}"></td>
+            <td th:text="${haohuo.addSellNum}"></td>
+            <td th:text="${haohuo.totalSellNum}"></td>
+            <td th:text="${#dates.format(haohuo.crawlerTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${#dates.format(haohuo.lastCrawlerTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${haohuo.productLink}"></td>
+            <td><a class="btn btn-primary" th:href="@{/haohuo/crawler/task/start/{productId}(productId=${haohuo.productId})}">马上爬取</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

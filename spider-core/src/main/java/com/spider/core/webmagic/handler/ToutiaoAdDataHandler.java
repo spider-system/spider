@@ -8,5 +8,5 @@ package com.spider.core.webmagic.handler;
 public interface ToutiaoAdDataHandler {
 
 
-    void sendToHaohuoCrawler(String task,String productId);
+    void sendToHaohuoCrawler(String productId);
 }

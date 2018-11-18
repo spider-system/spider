@@ -12,10 +12,12 @@ import io.swagger.annotations.ApiParam;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,7 @@ import java.util.List;
  * Created by wangchangpeng on 2018/11/17.
  */
 @Api(value = "haohuo商品详细销量管理",tags = "商品销量管理")
-@RestController
+@Controller
 @RequestMapping("haohuo/crawler")
 public class HaohuoCrawlerController {
 
@@ -38,41 +40,25 @@ public class HaohuoCrawlerController {
     private HaohuoSellMapper haohuoSellMapper;
 
     @ApiOperation("开始执行爬取任务")
-    @RequestMapping(value = "/task/start",method = RequestMethod.POST)
-    public ReturnT start(@RequestParam @ApiParam(value = "机器名称") String deviceName,
-                         @RequestParam @ApiParam(value = "商品ID") String productId ){
-        return haohuoCrawlerService.startCrawler(deviceName, productId);
+    @RequestMapping(value = "/task/start/{productId}",method = RequestMethod.POST)
+    public ReturnT start(@RequestParam @ApiParam(value = "商品ID") @PathVariable String productId ){
+        return haohuoCrawlerService.startCrawler(productId);
     }
-
-
-    @ApiOperation("停止爬取任务")
-    @RequestMapping(value = "/task/stop",method = RequestMethod.POST)
-    public ReturnT stop( @RequestParam @ApiParam(value = "机器名称") String deviceName){
-        return haohuoCrawlerService.stopCrawlerTask(deviceName);
-    }
-
-
-    @ApiOperation("查询爬取任务状态")
-    @RequestMapping(value = "/task/status",method = RequestMethod.GET)
-    public ReturnT status( @RequestParam @ApiParam(value = "机器名称") String deviceName){
-        return haohuoCrawlerService.getTaskStatsByTask(deviceName);
-    }
-
 
     @ApiOperation("更新全部商品的销量")
     @RequestMapping(value = "/task/crawlerAll",method = RequestMethod.GET)
-    public ReturnT crawlerAll(@RequestParam @ApiParam(value = "机器名称") String deviceName){
-        return haohuoCrawlerService.startAllCrawler(deviceName);
+    public ReturnT crawlerAll(){
+        return haohuoCrawlerService.startAllCrawler();
     }
 
 
     @ApiOperation("查询全部商品销量")
     @RequestMapping(value = "/product/list",method = RequestMethod.GET)
-    public ReturnT list(){
+    public String list(ModelMap map){
         List<HaohuoCommdityVO> haohuoCommdityVOS = new ArrayList<>();
         List<HaohuoCommodity> commodityList = haohuoCommodityMapper.query(new HaohuoCommodity());
         if (CollectionUtils.isEmpty(commodityList)) {
-            return new ReturnT().sucessData(haohuoCommdityVOS);
+            map.addAttribute("commoditys", new ArrayList<>());
         }
         for (HaohuoCommodity haohuoCommodity : commodityList) {
             HaohuoCommdityVO vo = new HaohuoCommdityVO();
@@ -94,7 +80,8 @@ public class HaohuoCrawlerController {
             }
             haohuoCommdityVOS.add(vo);
         }
-        return new ReturnT().sucessData(haohuoCommdityVOS);
+        map.addAttribute("commoditys", haohuoCommdityVOS);
+        return "haohuoList";
     }
 
 }

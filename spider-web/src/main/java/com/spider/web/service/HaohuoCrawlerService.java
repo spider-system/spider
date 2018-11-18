@@ -1,25 +1,25 @@
 package com.spider.web.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.spider.business.repostory.mapper.HaohuoCommodityMapper;
+import com.spider.business.repostory.mapper.HaohuoSellMapper;
 import com.spider.common.bean.HaohuoCommodity;
+import com.spider.common.bean.HaohuoSell;
+import com.spider.common.enums.ResultCodeEnum;
 import com.spider.common.response.ReturnT;
+import com.spider.core.webmagic.downloader.HttpSwitchProxyDownloader;
 import com.spider.core.webmagic.handler.ToutiaoAdDataHandler;
-import com.spider.core.webmagic.monitor.SpiderMonitor;
-import com.spider.core.webmagic.monitor.SpiderStatus;
-import com.spider.core.webmagic.processor.HaohuoApiProcessor;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.*;
+import us.codecraft.webmagic.utils.UrlUtils;
 
-import javax.management.JMException;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author: Wangchangpeng
@@ -33,96 +33,111 @@ public class HaohuoCrawlerService implements ToutiaoAdDataHandler {
     @Autowired
     private HaohuoCommodityMapper haohuoCommodityMapper;
 
-    private static ExecutorService haohuoCrawlerPoll = Executors.newCachedThreadPool();
+    @Autowired
+    private HaohuoSellMapper haohuoSellMapper;
 
-    private static String productUrl = "https://haohuo.snssdk.com/product/ajaxstaticitem?id=";
+    private static String PRODUCT_URL = "https://haohuo.snssdk.com/product/ajaxstaticitem?id=";
 
-    public ReturnT startCrawler(String task, String productId){
-        //get spider
-        SpiderStatus spiderStatus = SpiderMonitor.instance().getSpiderStatusByUUID(task);
-        if(spiderStatus != null && spiderStatus.getStatus().equals(String.valueOf(Spider.Status.Running))){
-            return new ReturnT().failureData("任务{"+task+"}正在执行中");
-        }
-        if(spiderStatus != null){
-            spiderStatus.start();
+    // 商品详情
+    private static final String PRODUCT_LINK = "https://haohuo.jinritemai.com/views/product/item?id=%s";
+
+    private HttpSwitchProxyDownloader httpDownLoader = new HttpSwitchProxyDownloader();
+
+    public ReturnT startCrawler(String productId){
+        if (StringUtils.isBlank(productId)) {
             return new ReturnT().successDefault();
         }
-        Spider haohuoSpider = Spider.create(new HaohuoApiProcessor())
-                        .addUrl(productUrl + productId)
-//                        .addPipeline(new HaohuoApiPipeline())
-                        .setUUID(task)
-                        .thread(1);
-        try {
-            SpiderMonitor.instance().register(haohuoSpider);//监控spider
-        } catch (JMException e) {
-            LOGGER.error(e.getMessage(),e);
+        Request request = new Request();
+        request.setUrl(PRODUCT_URL + productId);
+        Task task = Site.me().setDomain(UrlUtils.getDomain(PRODUCT_URL + productId)).setTimeOut(10000).toTask();
+        Page page = httpDownLoader.download(request, task);
+        String rawText = page.getRawText();
+        if (StringUtils.isBlank(rawText)) {
+            return new ReturnT().failureData(ResultCodeEnum.FAILURE);
         }
-        haohuoCrawlerPoll.execute(haohuoSpider);
+        JSONObject jsonObject =JSONObject.parseObject(rawText);
+        String msg = (String) jsonObject.get("msg");
+        JSONObject data = (JSONObject) jsonObject.get("data");
+        if (StringUtils.isNotBlank(msg) || data == null) {
+            return new ReturnT().failureData(ResultCodeEnum.FAILURE);
+        }
+        handlerHaohuoData(data);
         return new ReturnT().successDefault();
     }
 
 
-    public ReturnT startAllCrawler(String task){
+    public ReturnT startAllCrawler(){
         //get spider
-        SpiderStatus spiderStatus = SpiderMonitor.instance().getSpiderStatusByUUID(task);
-        if(spiderStatus != null && spiderStatus.getStatus().equals(String.valueOf(Spider.Status.Running))){
-            return new ReturnT().failureData("任务{"+task+"}正在执行中");
-        }
-        if(spiderStatus != null){
-            spiderStatus.start();
-            return new ReturnT().successDefault();
-        }
         List<HaohuoCommodity> commodities = haohuoCommodityMapper.query(new HaohuoCommodity());
         if (CollectionUtils.isEmpty(commodities)) {
             return new ReturnT().successDefault();
         }
         for (HaohuoCommodity haohuoCommodity : commodities) {
-            Spider haohuoSpider = Spider.create(new HaohuoApiProcessor())
-                    .addUrl(productUrl + haohuoCommodity.getProductId())
-//                        .addPipeline(new HaohuoApiPipeline())
-                    .setUUID(task)
-                    .thread(1);
-            try {
-                SpiderMonitor.instance().register(haohuoSpider);//监控spider
-            } catch (JMException e) {
-                LOGGER.error(e.getMessage(),e);
-            }
-            haohuoCrawlerPoll.execute(haohuoSpider);
+            startCrawler(haohuoCommodity.getProductId());
         }
         return new ReturnT().successDefault();
     }
 
-
-    public ReturnT stopCrawlerTask(String task){
-        SpiderStatus spiderStatus = SpiderMonitor.instance().getSpiderStatusByUUID(task);
-        if(spiderStatus == null){
-            return new ReturnT().failureData("任务不存在");
-        }
-        if(String.valueOf(Spider.Status.Running).equals(spiderStatus.getStatus())){
-            spiderStatus.stop();
-            return new ReturnT().successDefault();
-        }
-        return new ReturnT().failureData("任务不在执行中");
-    }
-
-    public ReturnT getTaskStatsByTask(String task){
-        SpiderStatus spiderStatus = SpiderMonitor.instance().getSpiderStatusByUUID(task);
-        if(spiderStatus == null){
-            return new ReturnT().failureData("任务不存在");
-        }
-        Map map = new HashMap();
-        map.put("status",spiderStatus.getStatus());
-        map.put("leftPageCount",spiderStatus.getLeftPageCount());
-        map.put("errorPageCount",spiderStatus.getErrorPageCount());
-        map.put("totalPageCount",spiderStatus.getTotalPageCount());
-        map.put("successPageCount",spiderStatus.getSuccessPageCount());
-        map.put("startTime",spiderStatus.getStartTime());
-        return new ReturnT().sucessData(map);
-
-    }
-
     @Override
-    public void sendToHaohuoCrawler(String task, String productId) {
-        this.startCrawler(task,productId);
+    public void sendToHaohuoCrawler(String productId) {
+        this.startCrawler(productId);
     }
+
+    private void handlerHaohuoData(JSONObject jsonObject) {
+        String productId = (String) jsonObject.get("product_id");
+        HaohuoCommodity commodity = haohuoCommodityMapper.selectByProductId(productId);
+        List<HaohuoSell> haohuoSells = haohuoSellMapper.selectByPrimaryKey(productId);
+        if (commodity != null) {
+            HaohuoSell haohuoSell = new HaohuoSell();
+            haohuoSell.setProductId(commodity.getProductId());
+            haohuoSell.setName(commodity.getName());
+            haohuoSell.setLastSellNum(commodity.getSellNum());
+            Integer sellNum = (Integer) jsonObject.get("sell_num");
+            haohuoSell.setTotalSellNum(sellNum);
+            haohuoSell.setAddSellNum(sellNum - commodity.getSellNum());
+            haohuoSell.setCrawlerTime(new Date());
+            if (CollectionUtils.isNotEmpty(haohuoSells)) {
+                haohuoSell.setLastCrawlerTime(haohuoSells.get(0).getCrawlerTime());
+            } else {
+                haohuoSell.setLastCrawlerTime(commodity.getCreateTime());
+            }
+            haohuoSellMapper.insert(haohuoSell);
+            return;
+        }
+        HaohuoCommodity haohuoCommodity = convertHaohuoCommdity(jsonObject);
+        haohuoCommodityMapper.insert(haohuoCommodity);
+    }
+
+
+
+    /**
+     * 转换为对象
+     *
+     * @param jsonObject
+     * @return
+     */
+    private HaohuoCommodity convertHaohuoCommdity (JSONObject jsonObject) {
+        HaohuoCommodity commodity = new HaohuoCommodity();
+        // 商品Id
+        String productId = (String) jsonObject.get("product_id");
+        // 商品名称
+        String name = (String) jsonObject.get("name");
+        // 销量
+        Integer sellNum = (Integer) jsonObject.get("sell_num");
+        // 店铺名
+        String shopName = (String) jsonObject.get("shop_name");
+        // 最高价
+        Integer skuMaxPrice = (Integer) jsonObject.get("sku_max_price");
+        // 打折价
+        Integer discountPrice = (Integer) jsonObject.get("discount_price");
+        commodity.setProductId(productId);
+        commodity.setShopName(shopName);
+        commodity.setName(name);
+        commodity.setSellNum(sellNum);
+        commodity.setSkuMaxPrice(skuMaxPrice);
+        commodity.setDiscountPrice(discountPrice);
+        commodity.setProductLink(String.format(PRODUCT_LINK, productId));
+        return commodity;
+    }
+
 }
