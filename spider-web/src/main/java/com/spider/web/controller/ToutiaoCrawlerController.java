@@ -24,38 +24,24 @@ public class ToutiaoCrawlerController {
     private TouTiaoCrawlerService touTiaoCrawlerService;
 
 
-    @ApiOperation("新增今日头条爬虫任务")
-    @RequestMapping(value = "/load/url",method = RequestMethod.POST)
-    public ReturnT add(@RequestParam @ApiParam(value = "爬取的url",required = true) String url, @RequestParam @ApiParam(value = "机器名称") String deviceName){
-        return touTiaoCrawlerService.importCrawlerUrl(url);
-    }
-
-
-    @ApiOperation("导入爬取url开始执行爬虫任务")
-    @RequestMapping(value = "/start/url",method = RequestMethod.POST)
-    public ReturnT startTaskByUrl(@RequestParam @ApiParam(value = "爬取的url",required = true) String url, @RequestParam @ApiParam(value = "机器名称") String deviceName){
-        return touTiaoCrawlerService.startCrawlerByImportUrl(deviceName,url);
-    }
-
-
     @ApiOperation("开始执行爬取任务")
     @RequestMapping(value = "/task/start",method = RequestMethod.POST)
-    public ReturnT start( @RequestParam @ApiParam(value = "机器名称") String deviceName){
-        return touTiaoCrawlerService.startCrawler(deviceName);
+    public ReturnT start( @RequestParam @ApiParam(value = "任务id") String taskId){
+        return touTiaoCrawlerService.startCrawler(taskId);
     }
 
 
     @ApiOperation("停止爬取任务")
     @RequestMapping(value = "/task/stop",method = RequestMethod.POST)
-    public ReturnT stop( @RequestParam @ApiParam(value = "机器名称") String deviceName){
-        return touTiaoCrawlerService.stopCrawlerTask(deviceName);
+    public ReturnT stop( @RequestParam @ApiParam(value = "任务id") String taskId){
+        return touTiaoCrawlerService.stopCrawlerTask(taskId);
     }
 
 
     @ApiOperation("查询爬取任务状态")
     @RequestMapping(value = "/task/status",method = RequestMethod.GET)
-    public ReturnT status( @RequestParam @ApiParam(value = "机器名称") String deviceName){
-        return touTiaoCrawlerService.getTaskStatsByTask(deviceName);
+    public ReturnT status( @RequestParam @ApiParam(value = "任务id") String taskId){
+        return touTiaoCrawlerService.getTaskStatsByTask(taskId);
     }
 
 

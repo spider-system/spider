@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spider.business.repostory.mapper.TaskMapper" >
+  <resultMap id="BaseResultMap" type="com.spider.common.bean.Task" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+    <result column="device_name" property="deviceName" jdbcType="VARCHAR" />
+    <result column="root_url" property="rootUrl" jdbcType="VARCHAR" />
+    <result column="device_id" property="deviceId" jdbcType="VARCHAR" />
+    <result column="device_platform" property="devicePlatform" jdbcType="VARCHAR" />
+    <result column="device_type" property="deviceType" jdbcType="VARCHAR" />
+    <result column="device_brand" property="deviceBrand" jdbcType="VARCHAR" />
+    <result column="params" property="params" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="crawler_time" property="crawlerTime" jdbcType="TIMESTAMP" />
+    <result column="last_crawler_time" property="lastCrawlerTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, task_id, device_name, root_url, device_id, device_platform, device_type, device_brand, 
+    params, status, crawler_time, last_crawler_time, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_task
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_task
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.spider.common.bean.Task" >
+    insert into t_task (id, task_id, device_name, 
+      root_url, device_id, device_platform, 
+      device_type, device_brand, params, 
+      status, crawler_time, last_crawler_time, 
+      create_time)
+    values (#{id,jdbcType=INTEGER}, #{taskId,jdbcType=VARCHAR}, #{deviceName,jdbcType=VARCHAR}, 
+      #{rootUrl,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, #{devicePlatform,jdbcType=VARCHAR}, 
+      #{deviceType,jdbcType=VARCHAR}, #{deviceBrand,jdbcType=VARCHAR}, #{params,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{crawlerTime,jdbcType=TIMESTAMP}, #{lastCrawlerTime,jdbcType=TIMESTAMP}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.spider.common.bean.Task" >
+    insert into t_task
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="deviceName != null" >
+        device_name,
+      </if>
+      <if test="rootUrl != null" >
+        root_url,
+      </if>
+      <if test="deviceId != null" >
+        device_id,
+      </if>
+      <if test="devicePlatform != null" >
+        device_platform,
+      </if>
+      <if test="deviceType != null" >
+        device_type,
+      </if>
+      <if test="deviceBrand != null" >
+        device_brand,
+      </if>
+      <if test="params != null" >
+        params,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="crawlerTime != null" >
+        crawler_time,
+      </if>
+      <if test="lastCrawlerTime != null" >
+        last_crawler_time,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="taskId != null" >
+        #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null" >
+        #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="rootUrl != null" >
+        #{rootUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceId != null" >
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="devicePlatform != null" >
+        #{devicePlatform,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null" >
+        #{deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceBrand != null" >
+        #{deviceBrand,jdbcType=VARCHAR},
+      </if>
+      <if test="params != null" >
+        #{params,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="crawlerTime != null" >
+        #{crawlerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastCrawlerTime != null" >
+        #{lastCrawlerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.spider.common.bean.Task" >
+    update t_task
+    <set >
+      <if test="taskId != null" >
+        task_id = #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null" >
+        device_name = #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="rootUrl != null" >
+        root_url = #{rootUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceId != null" >
+        device_id = #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="devicePlatform != null" >
+        device_platform = #{devicePlatform,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null" >
+        device_type = #{deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceBrand != null" >
+        device_brand = #{deviceBrand,jdbcType=VARCHAR},
+      </if>
+      <if test="params != null" >
+        params = #{params,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="crawlerTime != null" >
+        crawler_time = #{crawlerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastCrawlerTime != null" >
+        last_crawler_time = #{lastCrawlerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.spider.common.bean.Task" >
+    update t_task
+    set task_id = #{taskId,jdbcType=VARCHAR},
+      device_name = #{deviceName,jdbcType=VARCHAR},
+      root_url = #{rootUrl,jdbcType=VARCHAR},
+      device_id = #{deviceId,jdbcType=VARCHAR},
+      device_platform = #{devicePlatform,jdbcType=VARCHAR},
+      device_type = #{deviceType,jdbcType=VARCHAR},
+      device_brand = #{deviceBrand,jdbcType=VARCHAR},
+      params = #{params,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      crawler_time = #{crawlerTime,jdbcType=TIMESTAMP},
+      last_crawler_time = #{lastCrawlerTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+
+  <select id="query"  resultMap="BaseResultMap" parameterType="com.spider.common.bean.Task" >
+    select
+    <include refid="Base_Column_List" />
+    from t_task
+    <include refid="whereClause"></include>
+    <include refid="extendedOrderByClause"></include>
+  </select>
+
+  <select id="queryByTaskId"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_task
+    where task_Id = #{taskId}
+  </select>
+
+  <sql id="whereClause">
+    <where>
+      <if test="id != null" >and id = #{id}</if>
+      <if test="taskId != null and '' != taskId" >and task_Id = #{taskId}</if>
+      <if test="deviceName != null and '' != deviceName" >and device_name = #{deviceName}</if>
+      <if test="deviceId != null and '' != deviceId" >and device_id = #{deviceId}</if>
+      <if test="devicePlatform != null and '' != devicePlatform" >and device_platform = #{devicePlatform}</if>
+      <if test="deviceType != null and '' != deviceType" >and device_type = #{deviceType}</if>
+      <if test="deviceBrand != null and '' != deviceBrand" >and device_brand = #{deviceBrand}</if>
+      <if test="status != null" >and status = #{status}</if>
+    </where>
+  </sql>
+
+  <!-- 扩展的排序等语句（自定义）-->
+  <sql id="extendedOrderByClause">
+    <if test="null!=extendedParameter">
+      <if test="null!=extendedParameter.sidx and null!=extendedParameter.sord">ORDER BY ${extendedParameter.sidx}  ${extendedParameter.sord}   </if>
+    </if>
+  </sql>
+</mapper>

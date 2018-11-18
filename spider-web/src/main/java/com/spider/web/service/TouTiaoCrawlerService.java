@@ -1,6 +1,8 @@
 package com.spider.web.service;
 
 import com.alibaba.fastjson.JSON;
+import com.spider.business.repostory.mapper.TaskMapper;
+import com.spider.common.bean.Task;
 import com.spider.common.constants.GlobConts;
 import com.spider.common.response.ReturnT;
 import com.spider.core.util.SimpleThreadPoolExecutor;
@@ -26,6 +28,7 @@ import javax.management.JMException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -45,52 +48,58 @@ public class TouTiaoCrawlerService {
     @Autowired
     private HaohuoCrawlerService haohuoDataHanlder;
 
+    @Autowired
+    private TaskMapper taskMapper;
+
     private static ExecutorService crawlerPoll = new SimpleThreadPoolExecutor(20, 20,
             6L, TimeUnit.MILLISECONDS,new SynchronousQueue<Runnable>(),
             "ToutiaoSpiderThreadExecutor");
 
-
-    public ReturnT startCrawlerByImportUrl(String task,String url){
-        Map<String,String> map = parseUrl(url);
-        String rootUrl = map.get("rooturl");
-        map.remove("rooturl");
-        return startCrawler(task,rootUrl,map);
-    }
-
-
-    public ReturnT startCrawler(String task,String rootUrl,Map<String,String> paramMap){
+    public ReturnT startCrawler(String taskId,String rootUrl,Map<String,String> paramMap){
         //get spider
-        SpiderStatus spiderStatus = SpiderMonitor.instance().getSpiderStatusByUUID(task);
+        SpiderStatus spiderStatus = SpiderMonitor.instance().getSpiderStatusByUUID(taskId);
         if(spiderStatus != null && spiderStatus.getStatus().equals(String.valueOf(Spider.Status.Running))){
-            return new ReturnT().failureData("任务{"+task+"}正在执行中");
+            return new ReturnT().failureData("任务{"+taskId+"}正在执行中");
         }
         if(spiderStatus != null){
             spiderStatus.start();
             return new ReturnT().successDefault();
         }
-        //todo get param from db
         if(paramMap == null){
-            String paramStr = "{\"LBS_status\":\"deny\",\"ab_client\":\"a1,f2,f7,e1\",\"ab_feature\":\"z1\",\"ab_version\":\"574248,580098,570602,587869,486953,548454,577228,586023,571130,591886,239096,568569,170988,493250,571684,374119,588069,581761,576062,569578,562844,550042,435213,320832,586994,569343,545895,405355,578707,521962,584498,522765,416055,592541,558140,555254,378451,471407,579057,593074,582987,574603,271178,587785,585657,326532,591615,586291,573284,594159,583111,589794,593483,591900,587314,469022,554836,549647,424176,583593,31210,572465,583280,590232,591177,442255,593643,589412,584528,590522,569778,582114,546700,280449,281295,589814,473328,581398,325616,578587,590694,586519,511255,568792,498375,580578,467513,593904,252783,566292,444464,584240,579905,580448,590265,589102,586956,590514,572567,457481,562442\",\"ac\":\"WIFI\",\"aid\":\"13\",\"app_name\":\"news_article\",\"channel\":\"App Store\",\"city\":\"\",\"concern_id\":\"6286225228934679042\",\"count\":\"20\",\"detail\":\"1\",\"device_id\":\"59029797261\",\"device_platform\":\"iphone\",\"device_type\":\"iPhone 7 Plus\",\"fp\":\"crT_P2mucWLMFlTZP2U1F2KIFzKe\",\"idfa\":\"C2C21E1A-60E3-4E00-884B-71E72432074F\",\"idfv\":\"D9C014A4-65BE-4ECD-90A6-F162DAE0FB06\",\"iid\":\"50103135774\",\"image\":\"1\",\"language\":\"zh-Hans-CN\",\"last_refresh_sub_entrance_interval\":\"${last_refresh_sub_entrance_interval}\",\"list_count\":\"${list_count}\",\"loc_mode\":\"0\",\"min_behot_time\":\"${min_behot_time}\",\"openudid\":\"c5b86e8e398cee66cdb09acee7ab2d7fd161970a\",\"os_version\":\"12.1\",\"refer\":\"1\",\"refresh_reason\":\"0\",\"resolution\":\"1242*2208\",\"session_refresh_idx\":\"4\",\"ssmix\":\"a\",\"st_time\":\"56\",\"strict\":\"0\",\"tma_jssdk_version\":\"1.3.0.3\",\"ts\":\"1542179121\",\"tt_from\":\"${tt_from}\",\"update_version_code\":\"69722\",\"version_code\":\"6.9.7\",\"vid\":\"D9C014A4-65BE-4ECD-90A6-F162DAE0FB06\"}";
-            paramMap = JSON.parseObject(paramStr,Map.class);
+            Task task = taskMapper.queryByTaskId(taskId);
+            if(task == null){
+                return new ReturnT().failureData("task["+taskId+"]不存在");
+
+            }
+            if(StringUtils.isBlank(task.getRootUrl()) || StringUtils.isBlank(task.getParams())){
+                return new ReturnT().failureData("task["+taskId+"]配置信息有误");
+            }
+            try {
+                paramMap = JSON.parseObject(task.getParams(),Map.class);
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(),e);
+                return new ReturnT().failureData("taskId["+taskId+"]请求信息有误");
+            }
+            rootUrl = task.getRootUrl();
         }
 
         if(StringUtils.isEmpty(rootUrl)){
-            rootUrl = "http://is.snssdk.com/api/news/feed/v88/";
+            return new ReturnT().failureData("task["+taskId+"]任务启动失败，rootUrl为空");
         }
         String params = ToutiaoUtil.contactUrlParams(paramMap);
         Long time = System.currentTimeMillis();
-        Long min_behot_time = time - 1000*60*60;
-        params = params.replace("${min_behot_time}",String.valueOf(min_behot_time))
-                .replace("${last_refresh_sub_entrance_interval}",String.valueOf(time))
-                .replace("${loc_time}",String.valueOf(time))
-                .replace("${tt_from}","enter_auto")
-                .replace("${list_count}","1");
+        Long min_behot_time = time - GlobConts.CRAWLER_TIME_REGION;
+        params = params.replace("${"+GlobConts.MIN_BEHOT_TIME+"}",String.valueOf(min_behot_time))
+                .replace("${"+GlobConts.LAST_FRESH_SUB_ENTRANCE_INTERVAL+"}",String.valueOf(time))
+                .replace("${"+GlobConts.LOC_TIME+"}",String.valueOf(time))
+                .replace("${"+GlobConts.TT_FROM+"}",GlobConts.FIRST_FF_FROM_IOS)
+                .replace("${"+GlobConts.LIST_COUNT+"}","1");
         ToutiaoSpider toutiaoSpider = ToutiaoSpider.create(new ToutiaoAppPageProcessor());
         toutiaoSpider.setStatusListener(crawlerStatusLisnter)
                 .addUrl(rootUrl+"?"+params)
                 .addPipeline(new ToutiaoAppPipeline(GlobConts.STORE_DATA_PATH,haohuoDataHanlder))
                 .setDownloader(new HttpSwitchProxyDownloader())
-                .setUUID(task)
+                .setUUID(taskId)
                 .thread(100);
         try {
             //监控spider
@@ -118,7 +127,7 @@ public class TouTiaoCrawlerService {
             spiderStatus.stop();
             spiderStatus.setManualStop(true);
             try {
-                crawlerStatusLisnter.reportSoptEvent(task);
+                crawlerStatusLisnter.reportSoptEvent(task,spiderStatus.getStartTime());
             } catch (Exception e) {
                 LOGGER.error(e.getMessage(),e);
             }
@@ -150,8 +159,8 @@ public class TouTiaoCrawlerService {
 
 
     public ReturnT importCrawlerUrl(String url){
-        Map<String,String> parameters = parseUrl(url);
-        parameters.remove("rooturl");
+        Map<String,String> parameters = ToutiaoUtil.parseUrl(url);
+        parameters.remove(GlobConts.ROOT_URL_PREFIX);
         //record parameter
         try {
             FileUtils.writeByteArrayToFile(new File("/Users/wangpeng/Documents/webmagic-crawler-file/url/"+System.currentTimeMillis()+".json"),JSON.toJSONString(parameters).getBytes());
@@ -159,32 +168,6 @@ public class TouTiaoCrawlerService {
             //
         }
         return new ReturnT().successDefault();
-    }
-
-
-    private Map<String,String> parseUrl(String url){
-        url = URLDecoder.decode(url);
-        String[] arrs = url.split("\\?");
-        String[] params = arrs[1].split("&");
-        Map<String,String> parameters = new HashMap<>();
-        for (String param : params) {
-            String[] kv = param.split("=");
-            String key = kv[0];
-            String value = "";
-            if(kv.length == 2){
-                value = kv[1];
-            }
-            if("as".equals(key) || "cp".equals(key)){
-                continue;
-            }
-            if("last_refresh_sub_entrance_interval".equals(key) || "min_behot_time".equals(key)
-                    ||  "list_count".equals(key) ||  "tt_from".equals(key)){
-                value = "${"+key+"}";
-            }
-            parameters.put(key,value);
-        }
-        parameters.put("rooturl",arrs[0]);
-        return parameters;
     }
 
 }

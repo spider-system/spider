@@ -7,6 +7,8 @@ import com.spider.core.webmagic.monitor.SpiderStatus;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 
+import java.util.Date;
+
 /**
  * @author: wangpeng
  * @date: 2018/11/17 18:51
@@ -42,7 +44,7 @@ public class ToutiaoSpider extends Spider {
         if(statusListener == null){
             statusListener = new StatusListener() {
                 @Override
-                public void reportSoptEvent(String task) {
+                public void reportSoptEvent(String task,Date startTime) {
                     //do nothing
                 }
 
@@ -66,13 +68,14 @@ public class ToutiaoSpider extends Spider {
             SpiderMonitor.instance().unRegisterSpdierByTask(getUUID());
         }
         if(spiderStatus != null){
+            Date start = spiderStatus.getStartTime();
             Long startTime = spiderStatus.getStartTime().getTime();
             Long runningTime = System.currentTimeMillis()-startTime;
             //跑的时间太短 重启任务
             if(!spiderStatus.getManualStop() && runningTime < GlobConts.CRAWLER_TIME_TOO_SHORT){
                 statusListener.restartTask(getUUID());
             }else {
-                statusListener.reportSoptEvent(getUUID());
+                statusListener.reportSoptEvent(getUUID(),start);
             }
         }
     }

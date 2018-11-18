@@ -1,9 +1,11 @@
 package com.spider.core.util;
 
+import com.spider.common.constants.GlobConts;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.DigestUtils;
 import us.codecraft.webmagic.Page;
 
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,8 +37,8 @@ public class ToutiaoUtil {
             cp = e.substring(0,3) + r + "E1";
         }
         Map<String,String> map = new HashMap<>();
-        map.put("as",as);
-        map.put("cp",cp);
+        map.put(GlobConts.AS,as);
+        map.put(GlobConts.CP,cp);
         return map;
     }
 
@@ -64,8 +66,8 @@ public class ToutiaoUtil {
     public static String replaceParams(Page page, Map<String,String> replaceMap) {
         String url = page.getUrl().get();
         Map<String,String> ascp = getAsCp();
-        replaceMap.put("as",ascp.get("as"));
-        replaceMap.put("cp",ascp.get("cp"));
+        replaceMap.put(GlobConts.AS,ascp.get(GlobConts.AS));
+        replaceMap.put(GlobConts.CP,ascp.get(GlobConts.CP));
         for (Map.Entry<String, String> kv : replaceMap.entrySet()) {
             String key = kv.getKey();
             String vaule = kv.getValue();
@@ -95,7 +97,33 @@ public class ToutiaoUtil {
             sb.append("&");
         }
         Map<String,String> ascpMap = getAsCp();
-        sb.append("as=").append(ascpMap.get("as")).append("&cp=").append(ascpMap.get("cp"));
+        sb.append(GlobConts.AS+"=").append(ascpMap.get(GlobConts.AS)).append("&"+GlobConts.CP+"=").append(ascpMap.get(GlobConts.AS));
         return sb.toString();
+    }
+
+
+    public static Map<String,String> parseUrl(String url){
+        url = URLDecoder.decode(url);
+        String[] arrs = url.split("\\?");
+        String[] params = arrs[1].split("&");
+        Map<String,String> parameters = new HashMap<>();
+        for (String param : params) {
+            String[] kv = param.split("=");
+            String key = kv[0];
+            String value = "";
+            if(kv.length == 2){
+                value = kv[1];
+            }
+            if(GlobConts.AS.equals(key) || GlobConts.CP.equals(key)){
+                continue;
+            }
+            if(GlobConts.LAST_FRESH_SUB_ENTRANCE_INTERVAL.equals(key) || GlobConts.MIN_BEHOT_TIME.equals(key)
+                    ||  GlobConts.LIST_COUNT.equals(key) ||  GlobConts.TT_FROM.equals(key)){
+                value = "${"+key+"}";
+            }
+            parameters.put(key,value);
+        }
+        parameters.put(GlobConts.ROOT_URL_PREFIX,arrs[0]);
+        return parameters;
     }
 }
