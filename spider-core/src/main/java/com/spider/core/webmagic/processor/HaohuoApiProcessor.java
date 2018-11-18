@@ -35,6 +35,9 @@ public class HaohuoApiProcessor implements PageProcessor {
     @Autowired
     private HaohuoSellMapper haohuoSellMapper;
 
+
+
+
     @Override
     public void process(Page page) {
         JSONObject jsonObject = JSON.parseObject(page.getRawText());

@@ -21,6 +21,7 @@ import us.codecraft.webmagic.downloader.HttpUriRequestConverter;
 import us.codecraft.webmagic.proxy.Proxy;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -97,7 +98,7 @@ public class HttpSwitchProxyDownloader extends HttpClientDownloader {
         Page page = Page.fail();
         try {
             httpResponse = httpClient.execute(requestContext.getHttpUriRequest(), requestContext.getHttpClientContext());
-            page = handleResponse(request, request.getCharset() != null ? request.getCharset() : task.getSite().getCharset(), httpResponse, task);
+            page = handleResponse(request, request.getCharset() != null ? request.getCharset() : Charset.defaultCharset().name(), httpResponse, task);
             onSuccess(request);
             if(request.getUrl().contains(GlobConts.TOUTIAO_URL_PREFIX)){
                 logger.info("downloading page success {}", request.getUrl());

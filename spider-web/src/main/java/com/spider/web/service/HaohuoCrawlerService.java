@@ -3,6 +3,7 @@ package com.spider.web.service;
 import com.spider.business.repostory.mapper.HaohuoCommodityMapper;
 import com.spider.common.bean.HaohuoCommodity;
 import com.spider.common.response.ReturnT;
+import com.spider.core.webmagic.handler.ToutiaoAdDataHandler;
 import com.spider.core.webmagic.monitor.SpiderMonitor;
 import com.spider.core.webmagic.monitor.SpiderStatus;
 import com.spider.core.webmagic.processor.HaohuoApiProcessor;
@@ -25,7 +26,7 @@ import java.util.concurrent.Executors;
  * @date: 2018/11/17.
  */
 @Service
-public class HaohuoCrawlerService {
+public class HaohuoCrawlerService implements ToutiaoAdDataHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HaohuoCrawlerService.class);
 
@@ -118,5 +119,10 @@ public class HaohuoCrawlerService {
         map.put("startTime",spiderStatus.getStartTime());
         return new ReturnT().sucessData(map);
 
+    }
+
+    @Override
+    public void sendToHaohuoCrawler(String task, String productId) {
+        this.startCrawler(task,productId);
     }
 }

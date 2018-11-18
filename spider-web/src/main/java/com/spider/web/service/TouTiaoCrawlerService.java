@@ -42,6 +42,9 @@ public class TouTiaoCrawlerService {
     @Autowired
     private ToutiaoCrawlerStatusLisnter crawlerStatusLisnter;
 
+    @Autowired
+    private HaohuoCrawlerService haohuoDataHanlder;
+
     private static ExecutorService crawlerPoll = new SimpleThreadPoolExecutor(20, 20,
             6L, TimeUnit.MILLISECONDS,new SynchronousQueue<Runnable>(),
             "ToutiaoSpiderThreadExecutor");
@@ -85,7 +88,7 @@ public class TouTiaoCrawlerService {
         ToutiaoSpider toutiaoSpider = ToutiaoSpider.create(new ToutiaoAppPageProcessor());
         toutiaoSpider.setStatusListener(crawlerStatusLisnter)
                 .addUrl(rootUrl+"?"+params)
-                .addPipeline(new ToutiaoAppPipeline(GlobConts.STORE_DATA_PATH))
+                .addPipeline(new ToutiaoAppPipeline(GlobConts.STORE_DATA_PATH,haohuoDataHanlder))
                 .setDownloader(new HttpSwitchProxyDownloader())
                 .setUUID(task)
                 .thread(100);
