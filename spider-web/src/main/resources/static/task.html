@@ -165,7 +165,7 @@
             shrinkToFit: true,
             rowNum: 14,
             rowList: [10, 20, 30],
-            colNames: ['taskId','设备名称', '设备平台','机型','状态','开始爬取时间','创建时间', '操作'],
+            colNames: ['taskId','设备名称', '设备平台','机型','状态','创建时间', '操作'],
             colModel: [
                 {
                     name: 'taskId',
@@ -203,14 +203,9 @@
                     }
                 },
                 {
-                    name: 'crawlerTime',
-                    index: 'crawlerTime',
-                    width: 90
-                },
-                {
-                    name: 'lastCrawlerTime',
-                    index: 'lastCrawlerTime',
-                    width: 80
+                    name: 'createTime',
+                    index: 'createTime',
+                    width: 100
                 },
                 {
                     name: 'id',
