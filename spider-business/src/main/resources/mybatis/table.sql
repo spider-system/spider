@@ -30,7 +30,7 @@ CREATE TABLE `t_haohuo_product_sell` (
   PRIMARY KEY (`id`)
 );
 
---爬虫任务表
+-- 爬虫任务表
 CREATE TABLE `t_task` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `task_id` varchar(32) NOT NULL COMMENT '任务Id',
@@ -41,7 +41,7 @@ CREATE TABLE `t_task` (
   `device_type` varchar(24) DEFAULT NULL COMMENT '设备品牌',
   `device_brand` varchar(32) DEFAULT NULL COMMENT '型号',
   `params` text COMMENT '参数的json',
-  `status` int(11) DEFAULT '0' COMMENT '任务执行状态 0:Init 1:Running  2:Stopped',
+  `status` int(1) DEFAULT '0' COMMENT '任务执行状态 0:Init 1:Running  2:Stopped',
   `crawler_time` datetime DEFAULT NULL COMMENT '爬取开始时间',
   `last_crawler_time` datetime DEFAULT NULL COMMENT '上一次爬取时间',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',

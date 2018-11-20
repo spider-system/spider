@@ -106,8 +106,8 @@
           <if test="firstIndustry != null and '' != firstIndustry" >and first_industry = #{firstIndustry}</if>
           <if test="secondIndustry != null and '' != secondIndustry" >and second_industry = #{secondIndustry}</if>
           <if test="status != null" >and status = #{status}</if>
-          <if test="shopName != null" >and shop_name = #{shopName}</if>
-          <if test="name != null" >and name = #{name}</if>
+          <if test="shopName != null" >and shop_name like CONCAT('%',#{shopName},'%')</if>
+          <if test="name != null" >and name like CONCAT('%',#{name},'%')</if>
       </where>
   </sql>
 </mapper>
