@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> - jqGird</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="shortcut icon" href="favicon.ico">
+    <style>
+        #alertmod_table_list_2 {
+            top: 900px !important;
+        }
+    </style>
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="assets/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="assets/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="assets/css/animate.css" rel="stylesheet">
+    <link href="assets/css/style.css?v=4.1.0" rel="stylesheet">
+
+    <!-- Sweet Alert -->
+    <link href="assets/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+
+    <!-- 全局js -->
+    <script src="assets/js/jquery.min.js?v=2.1.4"></script>
+    <script src="assets/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="assets/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="assets/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="assets/js/plugins/layer/layer.min.js"></script>
+
+    <!-- 自定义js -->
+    <script src="assets/js/hanfuLoad.js?v=4.1.0"></script>
+    <script src="assets/js/content.js?v=1.0.0"></script>
+
+    <!-- Peity -->
+    <script src="assets/js/plugins/peity/jquery.peity.min.js"></script>
+    <script src="assets/js/plugins/accounting.min.js"></script>
+
+    <!-- Sweet alert -->
+    <script src="assets/js/plugins/sweetalert/sweetalert.min.js"></script>
+    <script type="text/javascript" src="assets/js/index.js"></script>
+
+    <!-- 第三方插件
+    <script src="assets/js/plugins/pace/pace.min.js"></script> -->
+
+    <!-- artTemplate -->
+    <script src="assets/js/plugins/artTemplate/template.js"></script>
+
+    <script src="assets/js/namespace.js"></script>
+    <script src="assets/js/config.js"></script>
+
+    <!-- jqgrid-->
+    <link href="assets/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+
+    <!-- jqGrid -->
+    <script src="assets/js/plugins/jqgrid/i18n/grid.locale-cn.js?0820"></script>
+    <script src="assets/js/plugins/jqgrid/jquery.jqGrid.min.js?0820"></script>
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content  animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>商品销量管理</h5>
+                </div>
+                <div class="ibox-content">
+                    <form role="form" class="form-inline" id="searchForm">
+                        <div class="form-group">
+                            <label>店铺名称:</label>
+                            <input type="text" name="shopName" class="form-control">
+                        </div>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <div class="form-group">
+                            <label>商品名称:</label>
+                            <input type="text" name="name" class="form-control">
+                        </div>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="button" class="btn btn-w-m btn-info" id="searchBth" >查询</button>
+                        <button type="button" class="btn btn-w-m btn-danger" id="resetBtn">重置</button>
+                    </form>
+                </div>
+
+                <div class="ibox-content">
+                    <button type="button" class="btn btn-w-m btn-success" id="reCrawlAllBtn">重新爬取所有销量</button>
+                    <button type="button" class="btn btn-w-m btn-primary" id="downloadAllBtn">下载所有商品</button>
+                </div>
+                <div class="ibox-content">
+                    <!-- <h4>用户列表</h4> -->
+                    <div class="jqGrid_wrapper">
+                        <table id="table_list"></table>
+                        <div id="pager_list"></div>
+                    </div>
+                    <p>&nbsp;</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page-Level Scripts -->
+<script>
+    $(document).ready(function () {
+        $.jgrid.defaults.styleUI = 'Bootstrap';
+        $("#table_list").jqGrid({
+            datatype: "json",
+            url: 'haohuo/product/list',
+            mtype : 'GET',
+            height: 300,
+            autowidth: true,
+            shrinkToFit: true,
+            rowNum: 14,
+            rowList: [10, 20, 30],
+            colNames: ['商品ID','一级行业', '二级行业','店铺名称','商品名称','商品最高价格','商品打折价格',
+                '最新销量', '上次销量', '销量增量', '最近爬取时间','上次爬取时间','商品链接', '操作'],
+            colModel: [
+                {
+                    name: 'productId',
+                    index: 'productId',
+                    width: 180
+                },
+                {
+                    name: 'firstIndustry',
+                    index: 'firstIndustry',
+                    width: 120
+                },
+                {
+                    name: 'secondIndustry',
+                    index: 'secondIndustry',
+                    width: 120
+                },
+                {
+                    name: 'shopName',
+                    index: 'shopName',
+                    width: 180
+                },
+                {
+                    name: 'name',
+                    index: 'name',
+                    width: 250,
+                },
+                {
+                    name: 'skuMaxPrice',
+                    index: 'skuMaxPrice',
+                    formatter:function(cellValue, options, rowObject){
+                        return formatMoney(cellValue, options, rowObject)
+                    },
+                    width: 70
+                },{
+                    name: 'discountPrice',
+                    index: 'discountPrice',
+                    formatter:function(cellValue, options, rowObject){
+                        return formatMoney(cellValue, options, rowObject)
+                    },
+                    width: 70
+                },{
+                    name: 'lastSellNum',
+                    index: 'lastSellNum',
+                    width: 70
+                },{
+                    name: 'addSellNum',
+                    index: 'addSellNum',
+                    width: 70
+                },{
+                    name: 'totalSellNum',
+                    index: 'totalSellNum',
+                    width: 70
+                },{
+                    name: 'crawlerTime',
+                    index: 'crawlerTime',
+                    formatter:function(cellvalue, options, rowObject){
+                        return formatDate(cellvalue);
+                    },
+                    width: 150
+                },
+                {
+                    name: 'lastCrawlerTime',
+                    index: 'lastCrawlerTime',
+                    formatter:function(cellvalue, options, rowObject){
+                        return formatDate(cellvalue);
+                    },
+                    width: 150
+                },
+                {
+                    name: 'productLink',
+                    index: 'productLink',
+                    width: 100,
+                    formatter: function(cellvalue, options, rowObject){
+                        var html = '<a href="'+cellvalue+'" target="view_window"><i class="fa fa-paste"></i>商品链接</a>&nbsp;&nbsp;';
+                        return html;
+                    }
+                },
+                {
+                    name: 'productId',
+                    index: 'productId',
+                    width: 120,
+                    sortable: false,
+                    formatter: function(cellvalue, options, rowObject){
+                        var html = '<button class="btn btn-info" name="update-btn" onClick="goCrawler('+rowObject.productId+')" data-key="'+rowObject.productId+'" type="button"><i class="fa fa-paste"></i>更新销量</button>&nbsp;&nbsp;';
+                        return html;
+                    }
+                }
+            ],
+            pager: "#pager_list",
+            viewrecords: true,
+            hidegrid: false,
+            jsonReader :{
+                root: "result",    // json中代表实际模型数据的入口
+                page: "pageNum",    // json中代表当前页码的数据
+                total: "pages",    // json中代表页码总数的数据
+                records: "total", // json中代表数据行总数的数据
+                repeatitems: false
+            },
+            multiselect : true,
+            autowidth: true,
+            sortname: 'id',
+            viewrecords: true,
+            sortorder: "desc"
+        });
+
+        $('#resetBtn').bind('click',function(){
+            $('#searchForm')[0].reset();
+        });
+
+        $('#searchBth').bind('click',function(){
+            search();
+        });
+
+        $('#reCrawlAllBtn').bind('click',function(){
+            crawlerAll();
+        });
+
+    });
+
+    function formatMoney(cellValue, options, rowObject){
+        var resTotal = accounting.formatMoney(cellValue, "", 2);//保留2位小数
+        resTotal= resTotal.replace("00", "");//格式化数字
+        resTotal= resTotal.replace(".00", "");//格式化数字
+        return resTotal + "元";
+    }
+
+    function formatDate(cellvalue, options, rowObject) {
+        if(cellvalue==null ||cellvalue==""){return ""}
+        var time = new Date(cellvalue);
+        return time.getFullYear()+"-"
+            +(time.getMonth()<9?("0"+(time.getMonth()+1)):(time.getMonth()+1))+"-"
+            +(time.getDate()<10?("0"+time.getDate()):(time.getDate()))+" "
+            +(time.getHours()<10?("0"+time.getHours()):(time.getHours()))+":"
+            +(time.getMinutes()<10?("0"+time.getMinutes()):(time.getMinutes()))+":"
+            +(time.getSeconds()<10?("0"+time.getSeconds()):(time.getSeconds()));
+    }
+
+    function goCrawler(productId){
+        var params = {};
+        $('#updForm .form-control').each(function(){
+            var name = $(this).attr('name');
+            var value = $(this).val();
+            if (value !='' || value.trim() != '' || value != undefined) {
+                params[name] = value;
+            }
+        });
+        var param ={};
+        console.log("productId------------>" + productId);
+        param["productId"] = productId;
+        var dataKey = $(this).attr('data-key');
+        console.log("dataKey------------>" + dataKey);
+        postAjax('haohuo/task/start', param, function(result){
+            if(result.success){
+                $("#table_list").trigger("reloadGrid");
+                swal("提示！", "请求成功!", "success");
+                $("#upd-modal").modal("hide");
+            }else{
+                swal("提示！", result.msg, "error");
+            }
+        });
+        $('#table_list').jqGrid('setGridParam',{
+            postData : params,
+            //查询重载第一页
+            page : 1
+        }).trigger("reloadGrid"); //重新载入
+    }
+
+    function crawlerAll(){
+        var param = {};
+        $('#updForm .form-control').each(function(){
+            var name = $(this).attr('name');
+            var value = $(this).val();
+            if (value !='' || value.trim() != '' || value != undefined) {
+                param[name] = value;
+            }
+        });
+        postAjax('haohuo//task/crawlerAll', {}, function(result){
+            if(result.success){
+                $("#table_list").trigger("reloadGrid");
+                swal("提示！", "请求成功!", "success");
+                $("#upd-modal").modal("hide");
+            }else{
+                swal("提示！", result.msg, "error");
+            }
+        });
+        $('#table_list').jqGrid('setGridParam',{
+            postData : param,
+            //查询重载第一页
+            page : 1
+        }).trigger("reloadGrid"); //重新载入
+    }
+
+    function search(){
+        var param = {};
+        $('#searchForm .form-control').each(function(){
+            var name = $(this).attr('name');
+            var value = $(this).val();
+            if (value !='' || value.trim() != '' || value != undefined) {
+                param[name] = value;
+            }
+        });
+        $('#table_list').jqGrid('setGridParam',{
+            postData : param,
+            //查询重载第一页
+            page : 1
+        }).trigger("reloadGrid"); //重新载入
+    }
+
+</script>
+</body>
+
+</html>

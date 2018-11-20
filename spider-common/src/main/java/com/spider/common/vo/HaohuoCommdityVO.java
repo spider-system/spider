@@ -1,11 +1,13 @@
 package com.spider.common.vo;
 
+import com.spider.common.base.WebPageParameter;
+
 import java.util.Date;
 
 /**
  * Created by wangchangpeng on 2018/11/18.
  */
-public class HaohuoCommdityVO {
+public class HaohuoCommdityVO extends WebPageParameter {
 
 
     private Integer id;

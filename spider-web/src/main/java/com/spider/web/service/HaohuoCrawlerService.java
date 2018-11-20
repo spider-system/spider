@@ -38,7 +38,9 @@ public class HaohuoCrawlerService implements ToutiaoAdDataHandler {
 
     private static String PRODUCT_URL = "https://haohuo.snssdk.com/product/ajaxstaticitem?id=";
 
-    // 商品详情
+    /**
+     * 商品详情
+      */
     private static final String PRODUCT_LINK = "https://haohuo.jinritemai.com/views/product/item?id=%s";
 
     private HttpSwitchProxyDownloader httpDownLoader = new HttpSwitchProxyDownloader();
@@ -57,10 +59,11 @@ public class HaohuoCrawlerService implements ToutiaoAdDataHandler {
         }
         JSONObject jsonObject =JSONObject.parseObject(rawText);
         String msg = (String) jsonObject.get("msg");
-        JSONObject data = (JSONObject) jsonObject.get("data");
-        if (StringUtils.isNotBlank(msg) || data == null) {
-            return new ReturnT().failureData(ResultCodeEnum.FAILURE);
+        Object responeData = jsonObject.get("data");
+        if (StringUtils.isNotBlank(msg) || responeData == null) {
+            return new ReturnT().failureData(msg);
         }
+        JSONObject data = (JSONObject) responeData;
         handlerHaohuoData(data);
         return new ReturnT().successDefault();
     }

@@ -1,12 +1,14 @@
 package com.spider.common.bean;
 
+import com.spider.common.base.BaseParameter;
+
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by wangchangpeng on 2018/11/14.
  */
-public class HaohuoCommodity implements Serializable {
+public class HaohuoCommodity extends BaseParameter implements Serializable  {
 
 
     private Integer id;
