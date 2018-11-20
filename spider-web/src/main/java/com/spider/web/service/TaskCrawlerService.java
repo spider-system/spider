@@ -117,4 +117,9 @@ public class TaskCrawlerService {
         crawlerService.startCrawler(taskId);
         return new ReturnT().successDefault();
     }
+
+
+    public ReturnT getTaskById(Integer id){
+        return new ReturnT().sucessData(taskMapper.selectByPrimaryKey(id));
+    }
 }

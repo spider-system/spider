@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>头条爬虫管理后台</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="assets/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="assets/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="assets/css/animate.css" rel="stylesheet">
+    <link href="assets/css/style.css?v=4.1.0" rel="stylesheet">
+
+
+    <!-- jqgrid-->
+    <link href="assets/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+
+    <!-- Sweet Alert -->
+    <link href="assets/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+
+
+
+    <!-- 全局js -->
+    <script src="assets/js/jquery.min.js?v=2.1.4"></script>
+    <script src="assets/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="assets/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="assets/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="assets/js/plugins/layer/layer.min.js"></script>
+
+    <!-- 自定义js -->
+    <script src="assets/js/hanfuLoad.js?v=4.1.0"></script>
+    <script src="assets/js/content.js?v=1.0.0"></script>
+
+    <!-- Peity -->
+    <script src="assets/js/plugins/peity/jquery.peity.min.js"></script>
+
+    <!-- jqGrid -->
+    <script src="assets/js/plugins/jqgrid/i18n/grid.locale-cn.js?0820"></script>
+    <script src="assets/js/plugins/jqgrid/jquery.jqGrid.min.js?0820"></script>
+
+    <!-- Sweet alert -->
+    <script src="assets/js/plugins/sweetalert/sweetalert.min.js"></script>
+    <script type="text/javascript" src="assets/js/index.js"></script>
+
+    <!-- 第三方插件
+    <script src="assets/js/plugins/pace/pace.min.js"></script> -->
+
+    <!-- artTemplate -->
+    <script src="assets/js/plugins/artTemplate/template.js"></script>
+
+
+    <script src="assets/js/namespace.js"></script>
+    <script src="assets/js/config.js"></script>
+
+
+
+</head>
+
+
+<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
+<div id="wrapper"></div>
+</body>
+
+<script type="text/javascript">
+    $(function(){
+        //postAsync($.URL.index.menu,{},function(result){list = result.data;});//加载菜单信息
+        //postAsync($.URL.index.getSessionUser,{},function(result){userName = result.data.username;});//加载用户信息
+        loadMenu();
+    });
+
+
+    function loadMenu(){
+        var html = template('menu_tmplate',{});
+        $('#wrapper').append(html);
+        loadLayout();
+        loadHref();
+    }
+</script>
+
+
+
+<script id="menu_tmplate" type="text/html">
+    <!--左侧导航开始-->
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="nav-close"><i class="fa fa-times-circle"></i>
+        </div>
+        <div class="sidebar-collapse">
+            <ul class="nav" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                <span class="clear">
+                                    <span class="block m-t-xs" style="font-size:20px;">
+                                        <i class="fa fa-area-chart"></i>
+                                        <strong class="font-bold">爬虫管理</strong>
+                                    </span>
+                                </span>
+                        </a>
+                    </div>
+                    <div class="logo-element">log
+                    </div>
+                </li>
+                <li class="line dk"></li>
+                <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+                    <span class="ng-scope">导航栏</span>
+                </li>
+
+
+                <li>
+                    <a href="#"><i class="icon-muted"></i> <span class="nav-label">爬虫管理</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a class="J_menuItem" href="task.html">任务管理</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#"><i class="icon"></i> <span class="nav-label">商品销量管理</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a class="J_menuItem" href="haohuo/crawler/product/list">商品管理</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+    <!--左侧导航结束-->
+    <!--右侧部分开始-->
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+        <div class="row border-bottom">
+            <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header"><a class="navbar-minimalize minimalize-styl-2 btn btn-info " href="#"><i class="fa fa-bars"></i> </a>
+                    <h1 align="center"><i>爬虫后台管理系统</i></h1>
+                </div>
+                <ul class="nav navbar-top-links navbar-right">
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" href="#" class="dropdown-toggle">
+								<span class="user-info">
+                                        <small>Welcome,</small>
+                                        user
+								</span>
+
+                            <i class="icon-caret-down"></i>
+                        </a>
+
+                        <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:logout();">
+                                    <i class="icon-off"></i>
+                                    Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="row J_mainContent" id="content-main">
+            <iframe id="J_iframe" width="100%" height="100%" src="center.html" frameborder="0" data-id="center.html" seamless></iframe>
+        </div>
+    </div>
+    <!--右侧部分结束-->
+    </div>
+</script>
+
+</html>

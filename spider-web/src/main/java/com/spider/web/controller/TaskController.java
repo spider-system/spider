@@ -54,8 +54,15 @@ public class TaskController {
     }
 
 
+    @ApiOperation("根据id查询任务")
+    @RequestMapping(value = "getById",method = {RequestMethod.GET,RequestMethod.POST})
+    public ReturnT queryTaskById(@ApiParam(value = "id") Integer id){
+        return taskCrawlerService.getTaskById(id);
+    }
+
+
     @ApiOperation("更新爬虫任务")
-    @RequestMapping(value = "/task/update",method = RequestMethod.PUT)
+    @RequestMapping(value = "/task/update",method = RequestMethod.POST)
     public ReturnT startTaskByUrl(@RequestParam @ApiParam(value = "爬取的url",required = true) String url, @RequestParam @ApiParam(value = "机器名称") String deviceName,@RequestParam @ApiParam(value = "任务Id") String taskId){
         return taskCrawlerService.updateToutiaoCrawlerTask(deviceName,taskId,url);
     }

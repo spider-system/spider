@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> - jqGird</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="shortcut icon" href="favicon.ico">
+    <style>
+        #alertmod_table_list_2 {
+            top: 900px !important;
+        }
+    </style>
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="assets/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="assets/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="assets/css/animate.css" rel="stylesheet">
+    <link href="assets/css/style.css?v=4.1.0" rel="stylesheet">
+
+
+    <!-- jqgrid-->
+    <link href="assets/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+
+    <!-- Sweet Alert -->
+    <link href="assets/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+
+
+
+    <!-- 全局js -->
+    <script src="assets/js/jquery.min.js?v=2.1.4"></script>
+    <script src="assets/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="assets/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="assets/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="assets/js/plugins/layer/layer.min.js"></script>
+
+    <!-- 自定义js -->
+    <script src="assets/js/hanfuLoad.js?v=4.1.0"></script>
+    <script src="assets/js/content.js?v=1.0.0"></script>
+
+    <!-- Peity -->
+    <script src="assets/js/plugins/peity/jquery.peity.min.js"></script>
+
+    <!-- jqGrid -->
+    <script src="assets/js/plugins/jqgrid/i18n/grid.locale-cn.js?0820"></script>
+    <script src="assets/js/plugins/jqgrid/jquery.jqGrid.min.js?0820"></script>
+
+    <!-- Sweet alert -->
+    <script src="assets/js/plugins/sweetalert/sweetalert.min.js"></script>
+    <script type="text/javascript" src="assets/js/index.js"></script>
+
+    <!-- 第三方插件
+    <script src="assets/js/plugins/pace/pace.min.js"></script> -->
+
+    <!-- artTemplate -->
+    <script src="assets/js/plugins/artTemplate/template.js"></script>
+
+    <script src="assets/js/namespace.js"></script>
+    <script src="assets/js/config.js"></script>
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content  animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>任务管理</h5>
+                </div>
+                <div class="ibox-content">
+                    <form role="form" class="form-inline" id="searchForm">
+                        <div class="form-group">
+                            <label>机器名称:</label>
+                            <input type="text" name="deviceName" class="form-control">
+                        </div>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <div class="form-group">
+                            <label>任务状态类型:</label>
+                            <select name="status" id="status" class="form-control">
+                                <option value="">---请选择---</option>
+                                <option value="1">执行中</option>
+                                <option value="2">已停止</option>
+                            </select>
+                        </div>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="button" class="btn btn-w-m btn-primary" id="searchBth" >查询</button>
+                        <button type="button" class="btn btn-w-m btn-success" id="resetBtn">重置</button>
+                    </form>
+                </div>
+                <div class="ibox-content">
+                    <button type="button" class="btn btn-w-m btn-success" id="addBtn">新增</button>
+                </div>
+                <div class="ibox-content">
+                    <!-- <h4>用户列表</h4> -->
+                    <div class="jqGrid_wrapper">
+                        <table id="table_list"></table>
+                        <div id="pager_list"></div>
+                    </div>
+                    <p>&nbsp;</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="add-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-pencil"></i>
+                    <span  style="font-weight:bold">头条爬虫任务新增</span>
+                </h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="addForm" action="" data-toggle="validator">
+                <div class="modal-body" id="add-data">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm" data-dismiss="modal">取消</button>
+                    <button type="button" id="save-btn" class="btn btn-sm btn-success">确定</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div id="upd-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">
+                    <i class="icon-pencil"></i>
+                    <span  style="font-weight:bold">任务修改</span>
+                </h4>
+            </div>
+            <form class="form-horizontal form-bordered form-row-strippe" id="updForm" action="" data-toggle="validator">
+                <div class="modal-body" id="upd-data">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm" data-dismiss="modal">取消</button>
+                    <button type="button" id="upd-btn" class="btn btn-sm btn-success">确定</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Page-Level Scripts -->
+<script>
+    $(document).ready(function () {
+        $.jgrid.defaults.styleUI = 'Bootstrap';
+        $("#table_list").jqGrid({
+            datatype: "json",
+            url: 'task/page',
+            mtype : 'GET',
+            height: 300,
+            autowidth: true,
+            shrinkToFit: true,
+            rowNum: 14,
+            rowList: [10, 20, 30],
+            colNames: ['taskId','设备名称', '设备平台','机型','状态','开始爬取时间','创建时间', '操作'],
+            colModel: [
+                {
+                    name: 'taskId',
+                    index: 'taskId',
+                    width: 120
+                },
+                {
+                    name: 'deviceName',
+                    index: 'deviceName',
+                    width: 120
+                },
+                {
+                    name: 'devicePlatform',
+                    index: 'devicePlatform',
+                    width: 90
+                },
+                {
+                    name: 'deviceType',
+                    index: 'deviceType',
+                    width: 120
+                },
+                {
+                    name: 'status',
+                    index: 'status',
+                    width: 90,
+                    formatter : function(cellvalue, options, rowObject){
+                        if(cellvalue == '0'){
+                            return '<p><span class="label label-sm label-inverse arrowed-in">init</span></p>';
+                        }else if(cellvalue == '1'){
+                            return '<p><span class="label label-sm label-warning">running</span></p>';
+                        }else if(cellvalue == '2'){
+                            return '<p><span class="label label-sm label-success">stopped</span></p>';
+                        }
+                        return cellvalue;
+                    }
+                },
+                {
+                    name: 'crawlerTime',
+                    index: 'crawlerTime',
+                    width: 90
+                },
+                {
+                    name: 'lastCrawlerTime',
+                    index: 'lastCrawlerTime',
+                    width: 80
+                },
+                {
+                    name: 'id',
+                    index: 'id',
+                    width: 300,
+                    sortable: false,
+                    formatter: function(cellvalue, options, rowObject){
+                        var html = '<button class="btn btn-info" name="edit-btn" onClick="goUpdate('+cellvalue+')" data-key="'+cellvalue+'" type="button"><i class="fa fa-paste"></i> 编辑</button>&nbsp;&nbsp;';
+                        if(rowObject.status == '1'){
+                             html += '<button class="btn btn-info" name="stop-btn" onClick="stopTask(\''+rowObject.taskId+'\')" data-key="'+rowObject.taskId+'" type="button"><i class="fa fa-paste"></i>停止</button>&nbsp;&nbsp;';
+                        }else {
+                            html += '<button class="btn btn-info" name="start-btn" onClick="startTask(\''+rowObject.taskId+'\')" data-key="'+rowObject.taskId+'" type="button"><i class="fa fa-paste"></i>启动</button>&nbsp;&nbsp;';
+                        }
+                        html += '<button class="btn btn-warning" onClick="deleteRow('+cellvalue+')"  type="button"><i class="fa fa-warning"></i> <span class="bold">删除</span> </button>';
+                        console.log(html);
+                        return html;
+                    }
+                }
+            ],
+            pager: "#pager_list",
+            viewrecords: true,
+            hidegrid: false,
+            jsonReader :{
+                root: "result",    // json中代表实际模型数据的入口
+                page: "pageNum",    // json中代表当前页码的数据
+                total: "pages",    // json中代表页码总数的数据
+                records: "total", // json中代表数据行总数的数据
+                repeatitems: false
+            },
+            multiselect : true,
+            autowidth: true,
+            sortname: 'id',
+            viewrecords: true,
+            sortorder: "desc"
+        });
+
+
+
+        $('#addBtn').bind('click',function(){
+            $('#add-data').html(template('add-tmpl',{}));
+            $("#add-modal").modal({backdrop: 'static', keyboard: false});
+        });
+
+
+        $('#save-btn').bind('click',function(){
+            save();
+        });
+
+        $('#searchBth').bind('click',function(){
+            search();
+        });
+
+        $('#resetBtn').bind('click',function(){
+            $('#searchForm')[0].reset();
+        });
+
+        $('#upd-btn').bind('click',function(){
+            update();
+        });
+
+
+
+    });
+
+    function update(){
+        var param = {};
+        $('#updForm .form-control').each(function(){
+            var name = $(this).attr('name');
+            var value = $(this).val();
+            param[name] = value;
+        });
+        if(!validate(param)){
+            return;
+        }
+        postAjax('task/update',param,function(result){
+            if(result.success){
+                $("#table_list").trigger("reloadGrid");
+                swal("提示！", "修改成功!", "success");
+                $("#upd-modal").modal("hide");
+            }else{
+                swal("提示！", result.msg, "error");
+            }
+        });
+    }
+
+    function startTask(taskId){
+        postAjax('toutiao/crawler/task/start',{'taskId': taskId},function(result){
+            if(result.success){
+                $("#table_list").trigger("reloadGrid");
+                swal("提示！", "启动成功!", "success");
+                $("#upd-modal").modal("hide");
+            }else{
+                swal("提示！", result.msg, "error");
+            }
+        });
+    }
+
+    function stopTask(taskId){
+        postAjax('toutiao/crawler/task/stop',{'taskId': taskId},function(result){
+            if(result.success){
+                $("#table_list").trigger("reloadGrid");
+                swal("提示！", "停止成功!", "success");
+                $("#upd-modal").modal("hide");
+            }else{
+                swal("提示！", result.msg, "error");
+            }
+        });
+    }
+
+
+
+
+
+    function search(){
+        var param = {};
+        $('#searchForm .form-control').each(function(){
+            var name = $(this).attr('name');
+            var value = $(this).val();
+            param[name] = value;
+        });
+        $('#table_list').jqGrid('setGridParam',{
+            postData : param,
+            //查询重载第一页
+            page : 1
+        }).trigger("reloadGrid"); //重新载入
+    }
+
+
+    function save(){
+        var param = {};
+        $('#addForm .form-control').each(function(){
+            var name = $(this).attr('name');
+            var value = $(this).val();
+            param[name] = value;
+        });
+        if(!validate(param)){
+            return;
+        }
+        postAjax('task/import/url',param,function(result){
+            if(result.success){
+                $("#table_list").trigger("reloadGrid");
+                swal("提示！", "新增成功!", "success");
+                $("#add-modal").modal("hide");
+            }else{
+                swal("提示！", result.msg, "error");
+            }
+        });
+
+    }
+
+    function goUpdate(id){
+        var data;
+        postAsync('task/getById',{'id':id},function(result){data=result.data});
+        $('#upd-data').html(template('upd-tmpl',{'data':data}));
+        $("#upd-modal").modal({backdrop: 'static', keyboard: false});
+    }
+
+
+    function deleteRow(taskId){
+        swal("提示信息", "功能开发中", "error");
+        /*swal({
+            title:"",
+            text:"确定删除吗？",
+            type:"warning",
+            showCancelButton:"true",
+            showConfirmButton:"true",
+            confirmButtonText:"确定",
+            cancelButtonText:"取消",
+            animation:"slide-from-top"
+        }, function() {
+            postAjax('task/delete',{'id':id},function(result){
+                if(result.success){
+                    $("#table_list").trigger("reloadGrid");
+                    swal("操作成功!", "已成功删除数据！", "success");
+                }else{
+                    swal("提示信息", "删除失败", "error");
+                }
+            });
+        });*/
+    }
+
+
+    function validate(param){
+        if (!param['deviceName']) {
+            swal("提示信息", "deviceName不能为空", "error");
+            return false;
+        }
+        if (!param['url']) {
+            swal("提示信息", "url不能为空", "error");
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+
+
+
+<!-- script templcate -->
+<script id="add-tmpl" type="text/html">
+    <div class="row">
+        <div class="col-md-12">
+            <label class="control-label col-md-2">设备名称:</label>
+            <div class="col-md-10">
+                <input name="deviceName" type="text" class="form-control" placeholder="设备名称" />
+            </div>
+        </div>
+        <div class="col-md-12">
+            <label class="control-label col-md-2">url:</label>
+            <div class="col-md-10">
+                <textarea name="url" type="text"  class="form-control" placeholder="url"></textarea>
+            </div>
+        </div>
+    </div>
+</script>
+
+
+<script id="upd-tmpl" type="text/html">
+    <div class="row">
+        <input name="taskId" type="hidden" value="{{data.taskId}}"  class="form-control"  />
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="control-label col-md-2">设备名称:</label>
+                <div class="col-md-10">
+                    <input name="deviceName" type="text" value="{{data.deviceName}}"  class="form-control" placeholder="设备名称" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">设备平台:</label>
+                <div class="col-md-10">
+                    <input type="text" value="{{data.devicePlatform}}"  class="form-control" placeholder="设备名称" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">品牌:</label>
+                <div class="col-md-10">
+                    <input type="text" value="{{data.deviceBrand}}"  class="form-control" placeholder="设备名称" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">型号:</label>
+                <div class="col-md-10">
+                    <input type="text" value="{{data.deviceType}}"  class="form-control" placeholder="设备名称" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">deviceId:</label>
+                <div class="col-md-10">
+                    <input type="text" value="{{data.deviceId}}"  class="form-control" placeholder="设备名称" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">rootUrl:</label>
+                <div class="col-md-10">
+                    <input type="text" value="{{data.rootUrl}}"  class="form-control" placeholder="设备名称" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">url:</label>
+                <div class="col-md-10">
+                    <textarea name="url" type="text"  class="form-control" placeholder="url"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+</html>

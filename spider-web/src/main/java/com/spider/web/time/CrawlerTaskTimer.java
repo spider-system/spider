@@ -1,6 +1,7 @@
 package com.spider.web.time;
 
 import com.spider.common.constants.GlobConts;
+import com.spider.common.utils.PropertieUtils;
 import com.spider.core.webmagic.monitor.SpiderMonitor;
 import com.spider.core.webmagic.monitor.SpiderStatus;
 import com.spider.core.webmagic.proxy.ProxyHttpClient;
@@ -66,7 +67,10 @@ public class CrawlerTaskTimer {
 
     @Scheduled(fixedDelay = 1000*60*60)
     public void startProxy(){
-        ProxyHttpClient.getInstance().startCrawl();
+        //只有使用代理才去代理网站爬取代理
+        if(PropertieUtils.getBoolean("isProxy")){
+            ProxyHttpClient.getInstance().startCrawl();
+        }
     }
 
     @Scheduled(cron="0/30 * *  * * ? ")//每30s执行一次
