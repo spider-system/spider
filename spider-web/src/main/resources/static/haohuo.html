@@ -249,7 +249,7 @@
         });
         var param ={};
         param["id"] = id;
-        getAjax('haohuo/task/start', param, function(result){
+        postAjax('haohuo/task/start', param, function(result){
             if(result.success){
                 $("#table_list").trigger("reloadGrid");
                 swal("提示！", "请求成功!", "success");
@@ -274,11 +274,11 @@
                 param[name] = value;
             }
         });
-        getAjax('haohuo/task/crawlerAll', function(result){
+        postAjax('haohuo/task/crawlerAll', function(result){
             if(result.success){
                 $("#table_list").trigger("reloadGrid");
                 swal("提示！", "请求成功!", "success");
-                $("#upd-modal").modal("hide");
+                $("#upd-modal").modal("hide");http://localhost:7010/spider/index.html
             }else{
                 swal("提示！", result.msg, "error");
             }

@@ -52,7 +52,7 @@ public class HaohuoCrawlerController {
     private HaohuoSellMapper haohuoSellMapper;
 
     @ApiOperation("开始执行爬取任务")
-    @RequestMapping(value = "/task/start", method = RequestMethod.GET)
+    @RequestMapping(value = "/task/start", method = RequestMethod.POST)
     public ReturnT start(@RequestParam @ApiParam(value = "商品ID") Integer id ){
         HaohuoCommodity haohuoCommodity = haohuoCommodityMapper.selectByPrimaryKey(id);
         if (haohuoCommodity == null) {
@@ -62,7 +62,7 @@ public class HaohuoCrawlerController {
     }
 
     @ApiOperation("更新全部商品的销量")
-    @RequestMapping(value = "/task/crawlerAll", method = RequestMethod.GET)
+    @RequestMapping(value = "/task/crawlerAll", method = RequestMethod.POST)
     public ReturnT crawlerAll(){
         return haohuoCrawlerService.startAllCrawler();
     }
