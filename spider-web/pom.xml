@@ -43,50 +43,6 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>classmate</artifactId>
-                    <groupId>com.fasterxml</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jul-to-slf4j</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jcl-over-slf4j</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>logback-classic</artifactId>
-                    <groupId>ch.qos.logback</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>log4j-over-slf4j</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>spring-boot-starter</artifactId>
-                    <groupId>org.springframework.boot</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-devtools</artifactId>-->
-            <!--<optional>true</optional>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.webjars</groupId>-->
-            <!--<artifactId>bootstrap</artifactId>-->
-            <!--<version>3.3.7</version>-->
-        <!--</dependency>-->
-
     </dependencies>
 
 
