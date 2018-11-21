@@ -84,7 +84,7 @@
 
                 <div class="ibox-content">
                     <button type="button" class="btn btn-w-m btn-success" id="reCrawlAllBtn">重新爬取所有销量</button>
-                    <button type="button" class="btn btn-w-m btn-primary" id="downloadAllBtn">下载所有商品</button>
+                    <button type="button" class="btn btn-w-m btn-primary" id="exportExcelBtn">导出所有商品</button>
                 </div>
                 <div class="ibox-content">
                     <!-- <h4>用户列表</h4> -->
@@ -133,12 +133,12 @@
                 {
                     name: 'shopName',
                     index: 'shopName',
-                    width: 180
+                    width: 120
                 },
                 {
                     name: 'name',
                     index: 'name',
-                    width: 250,
+                    width: 310,
                 },
                 {
                     name: 'skuMaxPrice',
@@ -159,12 +159,12 @@
                     index: 'lastSellNum',
                     width: 70
                 },{
-                    name: 'addSellNum',
-                    index: 'addSellNum',
-                    width: 70
-                },{
                     name: 'totalSellNum',
                     index: 'totalSellNum',
+                    width: 70
+                },{
+                    name: 'addSellNum',
+                    index: 'addSellNum',
                     width: 70
                 },{
                     name: 'crawlerTime',
@@ -197,7 +197,7 @@
                     width: 120,
                     sortable: false,
                     formatter: function(cellvalue, options, rowObject){
-                        var html = '<button class="btn btn-info" name="update-btn" onClick="goCrawler('+rowObject.productId+')" data-key="'+rowObject.productId+'" type="button"><i class="fa fa-paste"></i>更新销量</button>&nbsp;&nbsp;';
+                        var html = '<button class="btn btn-info" name="update-btn" onClick="goCrawler('+rowObject.id+')" data-key="'+rowObject.id+'" type="button"><i class="fa fa-paste"></i>更新销量</button>&nbsp;&nbsp;';
                         return html;
                     }
                 }
@@ -231,13 +231,17 @@
             crawlerAll();
         });
 
+        $('#exportExcelBtn').bind('click',function(){
+            window.location.href ='/spider/haohuo/exportAllRecords';
+        });
+
     });
 
     function formatMoney(cellValue, options, rowObject){
-        var resTotal = accounting.formatMoney(cellValue, "", 2);//保留2位小数
+        var resTotal = accounting.formatMoney(cellValue * 10, "", 2);//保留2位小数
         resTotal= resTotal.replace("00", "");//格式化数字
         resTotal= resTotal.replace(".00", "");//格式化数字
-        return resTotal + "元";
+        return resTotal + " 元";
     }
 
     function formatDate(cellvalue, options, rowObject) {
@@ -251,7 +255,7 @@
             +(time.getSeconds()<10?("0"+time.getSeconds()):(time.getSeconds()));
     }
 
-    function goCrawler(productId){
+    function goCrawler(id){
         var params = {};
         $('#updForm .form-control').each(function(){
             var name = $(this).attr('name');
@@ -261,11 +265,8 @@
             }
         });
         var param ={};
-        console.log("productId------------>" + productId);
-        param["productId"] = productId;
-        var dataKey = $(this).attr('data-key');
-        console.log("dataKey------------>" + dataKey);
-        postAjax('haohuo/task/start', param, function(result){
+        param["id"] = id;
+        getAjax('haohuo/task/start', param, function(result){
             if(result.success){
                 $("#table_list").trigger("reloadGrid");
                 swal("提示！", "请求成功!", "success");
@@ -290,7 +291,7 @@
                 param[name] = value;
             }
         });
-        postAjax('haohuo//task/crawlerAll', {}, function(result){
+        getAjax('haohuo/task/crawlerAll', function(result){
             if(result.success){
                 $("#table_list").trigger("reloadGrid");
                 swal("提示！", "请求成功!", "success");

@@ -7,11 +7,11 @@ import java.util.List;
 
 @MyBatisRepository
 public interface HaohuoCommodityMapper {
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(Integer id);
 
     int insert(HaohuoCommodity record);
 
-    HaohuoCommodity selectByPrimaryKey(Long id);
+    HaohuoCommodity selectByPrimaryKey(Integer id);
 
     HaohuoCommodity selectByProductId(String productId);
 

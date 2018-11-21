@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import us.codecraft.webmagic.*;
 import us.codecraft.webmagic.utils.UrlUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -75,8 +76,10 @@ public class HaohuoCrawlerService implements ToutiaoAdDataHandler {
         if (CollectionUtils.isEmpty(commodities)) {
             return new ReturnT().successDefault();
         }
+        List<ReturnT> returnTList = new ArrayList<>();
         for (HaohuoCommodity haohuoCommodity : commodities) {
-            startCrawler(haohuoCommodity.getProductId());
+            ReturnT returnT = startCrawler(haohuoCommodity.getProductId());
+            returnTList.add(returnT);
         }
         return new ReturnT().successDefault();
     }
